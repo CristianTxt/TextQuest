@@ -14,6 +14,7 @@ server.use(express.static('public'));
 
 server.use("/user", USER_API); 
 
+server.use(express.static('public'));
 
 server.get("/", (req, res, next)=> { 
     res.status(200).send(JSON.stringify({msg:"This is a message..."})).end();
