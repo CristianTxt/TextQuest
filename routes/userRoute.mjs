@@ -2,70 +2,57 @@ import express, { response } from "express";
 import User from "../modules/user.mjs"; 
 import HttpCodes from "../modules/httpErrorCodes.mjs";
 
-import express from "express";
-import User from "../modules/user.mjs";
-import HttpCodes from "../modules/httpErrorCodes.mjs";
 
-class UserApi {
-    constructor() {
-        this.currentUserId = 0;
-        this.users = [];
-        this.router = express.Router();
-        this.setupRoutes();
-    }
+const USER_API = express.Router(); 
 
-    setupRoutes() {
-        this.router.get("/user", this.getUsers.bind(this));
-        this.router.get("/user/:id", this.getUserById.bind(this));
-        this.router.post("/user", this.createUser.bind(this));
-        this.router.put("/user/:id", this.updateUser.bind(this));
-        this.router.delete("/user/:id", this.deleteUser.bind(this));
-    }
+const users = []; 
 
-    getUsers(req, res) {
-        res.status(HttpCodes.SuccesfullRespons.Ok).send(this.users).end();
-    }
+USER_API.get('/:id',(req, res)=>{ 
 
-    getUserById(req, res) {
-        const userId = parseInt(req.query.id);
-        const user = this.users.find((u) => u.id === userId);
-        if (user) {
-            res.status(HttpCodes.SuccesfullRespons.Ok).send(user).end();
-        } else {
-            res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
-        }
-    }
 
-    createUser(req, res) {
-        const { name, email, password } = req.body;
+});
 
-        if (name !== "" && email !== "" && password !== "") {
-            const user = new User();
-            user.id = ++this.currentUserId;
-            user.name = name;
-            user.email = email;
-            user.pswHash = password;
+USER_API.get('/',(req, res)=>{ 
+res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
+});
 
-            let exists = false;
+USER_API.post("/", (req, res, next)=>{ 
 
-            if (!exists) {
-                this.users.push(user);
-                res.status(HttpCodes.SuccesfullRespons.Ok).send(user).end();
-            } else {
-                res.status(HttpCodes.ClientSideErrorRespons.BadRequest).end();
-            }
-        } else {
-            res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
-        }
-    }
+const { name, email, password} = req.body;
 
-    updateUser(req, res) {
-        // Implement your logic for updating a user
-    }
+if ( name !="" && email !="" && password !=""){ 
+    const user = new User(); 
+    user.name = name;
+    user.email = email; 
 
-    deleteUser(req, res) {
-        // Implement your logic for deleting a user
-    }
+   user.pswHash = password; 
+
+
+
+   let exists = false; 
+
+   if(!exists){ 
+    users.push(user);
+    res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
+   } else { 
+    res.status(HttpCodes.ClientSideErrorRespons.BadRequest).end();
+   }
+
+
+} else { 
+    res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
 }
 
-export default new UserApi().router;
+
+}); 
+
+
+USER_API.put('/:id', (req, res)=> {
+
+})
+
+
+USER_API.delete('/:id', (req, res)=> { 
+
+})
+export default USER_API
