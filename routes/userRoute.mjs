@@ -4,7 +4,6 @@ import HttpCodes from "../modules/httpErrorCodes.mjs";
 
 const USER_API = express.Router();
 
-const users = [];
 function generateRandomString(length) {
     const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = '';
@@ -15,6 +14,29 @@ function generateRandomString(length) {
     return result;
 }
 
+
+
+const users = [];
+try {
+  const data = fs.readFileSync('users.json', 'utf8');
+  users = JSON.parse(data);
+} catch (err) {
+  console.log('Error reading users file:', err.message);
+}
+
+function saveUsersToFile() {
+    fs.writeFileSync('users.json', JSON.stringify(users), 'utf8', (err) => {
+      if (err) {
+        console.log('Error writing users file:', err.message);
+      }
+    });
+  }
+
+
+
+
+
+
 USER_API.get("/:id", (req, res) => {
     const userId = req.params.id;
 
@@ -22,6 +44,8 @@ USER_API.get("/:id", (req, res) => {
     const foundUser = users.find(u => u.id === userId);
 
     if (foundUser) {
+     
+
         res.status(HttpCodes.SuccesfullRespons.Ok).send(foundUser).end();
     } else {
         res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
@@ -29,6 +53,7 @@ USER_API.get("/:id", (req, res) => {
 });
 
 USER_API.get("/", (req, res) => {
+
     res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
 });
 
@@ -36,6 +61,7 @@ USER_API.post("/", (req, res, next) => {
     const { name, email, password } = req.body;
 
     if (name !== "" && email !== "" && password !== "") {
+      saveUsersToFile();
         const user = new User();
         let newUserId;
         do {
@@ -66,7 +92,7 @@ USER_API.put("/:id", (req, res) => {
       if (name) users[userIndex].name = name;
       if (email) users[userIndex].email = email;
       if (password) users[userIndex].pswHash = password;
-
+      saveUsersToFile();
       res.status(HttpCodes.SuccesfullRespons.Ok).send(users[userIndex]).end();
   } else {
       res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
@@ -87,6 +113,7 @@ USER_API.delete("/:id", (req, res) => {
   const userIndex = users.findIndex(u => u.id === userId);
 
   if (userIndex !== -1) {
+    saveUsersToFile();
       // Remove the user from the array
       const deletedUser = users.splice(userIndex, 1)[0];
       res.status(HttpCodes.SuccesfullRespons.Ok).send(deletedUser).end();
