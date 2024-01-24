@@ -54,7 +54,28 @@ USER_API.post("/", (req, res, next) => {
     }
 });
 
-USER_API.put("/:id", (req, res) => { });
+USER_API.put("/:id", (req, res) => {
+  const userId = req.params.id;
+  const { name, email, password } = req.body;
+
+  // Find the index of the user with the specified ID
+  const userIndex = users.findIndex(u => u.id === userId);
+
+  if (userIndex !== -1) {
+      // Update the user properties if new values are provided
+      if (name) users[userIndex].name = name;
+      if (email) users[userIndex].email = email;
+      if (password) users[userIndex].pswHash = password;
+
+      res.status(HttpCodes.SuccesfullRespons.Ok).send(users[userIndex]).end();
+  } else {
+      res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+  }
+});
+
+
+
+
 
 
 USER_API.delete("/:id", (req, res) => {
