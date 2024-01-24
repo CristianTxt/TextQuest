@@ -9,57 +9,53 @@ function generateRandomString(length) {
     const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = '';
     for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      result += characters.charAt(randomIndex);
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomIndex);
     }
     return result;
-  }
+}
 
-
-  USER_API.get("/:id", (req, res) => {
+USER_API.get("/:id", (req, res) => {
     const userId = req.params.id;
-  
+
     // Find the user with the specified ID
     const foundUser = users.find(u => u.id === userId);
-  
+
     if (foundUser) {
-      res.status(HttpCodes.SuccesfullRespons.Ok).send(foundUser).end();
+        res.status(HttpCodes.SuccesfullRespons.Ok).send(foundUser).end();
     } else {
-      res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+        res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
     }
-  });
-
-
+});
 
 USER_API.get("/", (req, res) => {
-  res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
+    res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
 });
 
 USER_API.post("/", (req, res, next) => {
-  const { name, email, password } = req.body;
+    const { name, email, password } = req.body;
 
-  if (name !== "" && email !== "" && password !== "") {
-    const user = new User();
-    user.id = generateRandomString(7); // Change 8 to the desired length
-    user.name = name;
-    user.email = email;
-    user.pswHash = password;
+    if (name !== "" && email !== "" && password !== "") {
+        const user = new User();
+        let newUserId;
+        do {
+            newUserId = generateRandomString(7);
+        } while (users.some(u => u.id === newUserId)); // Ensure the ID is unique
 
-    let exists = users.some((u) => u.email === email);
+        user.id = newUserId;
+        user.name = name;
+        user.email = email;
+        user.pswHash = password;
 
-    if (!exists) {
-      users.push(user);
-      res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
+        users.push(user);
+        res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
     } else {
-      res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("User with this email already exists").end();
+        res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
     }
-  } else {
-    res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
-  }
 });
 
-USER_API.put("/:id", (req, res) => {});
+USER_API.put("/:id", (req, res) => { });
 
-USER_API.delete("/:id", (req, res) => {});
+USER_API.delete("/:id", (req, res) => { });
 
 export default USER_API;
