@@ -11,13 +11,61 @@
 
     <ul id="user-list"></ul>
 
+    <h2>Create User</h2>
+    <form id="create-user-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Create User</button>
+    </form>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const userListElement = document.getElementById('user-list');
+            const createUserForm = document.getElementById('create-user-form');
 
             // Replace 'your_backend_api_url' with the actual URL of your backend API
             const apiUrl = 'http://localhost:8080/user';
 
+            // Function to create a user
+            const createUser = (name, email, password) => {
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email, password }),
+                })
+                .then(response => response.json())
+                .then(user => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${user.name} - ${user.email}`;
+                    userListElement.appendChild(listItem);
+                })
+                .catch(error => console.error('Error creating user:', error));
+            };
+
+            // Event listener for form submission
+            createUserForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                createUser(name, email, password);
+
+                // Clear the form fields after submission
+                createUserForm.reset();
+            });
+
+            // Fetch existing users on page load
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(users => {
