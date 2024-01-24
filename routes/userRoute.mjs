@@ -56,6 +56,24 @@ USER_API.post("/", (req, res, next) => {
 
 USER_API.put("/:id", (req, res) => { });
 
-USER_API.delete("/:id", (req, res) => { });
+
+USER_API.delete("/:id", (req, res) => {
+  const userId = req.params.id;
+
+  // Find the index of the user with the specified ID
+  const userIndex = users.findIndex(u => u.id === userId);
+
+  if (userIndex !== -1) {
+      // Remove the user from the array
+      const deletedUser = users.splice(userIndex, 1)[0];
+      res.status(HttpCodes.SuccesfullRespons.Ok).send(deletedUser).end();
+  } else {
+      res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+  }
+});
+
+
+
+
 
 export default USER_API;
