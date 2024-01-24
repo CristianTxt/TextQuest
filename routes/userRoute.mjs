@@ -17,7 +17,7 @@ function generateRandomString(length) {
 
 
 
-const users = [];
+let users = [];
 try {
   const data = fs.readFileSync('users.json', 'utf8');
   users = JSON.parse(data);
