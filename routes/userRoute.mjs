@@ -62,7 +62,7 @@ USER_API.post("/", (req, res, next) => {
     const { name, email, password } = req.body;
 
     if (name !== "" && email !== "" && password !== "") {
-      saveUsersToFile();
+     saveUsersToFile();
         const user = new User();
         let newUserId;
         do {
@@ -75,6 +75,7 @@ USER_API.post("/", (req, res, next) => {
         user.pswHash = password;
 
         users.push(user);
+        saveUsersToFile();
         res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
     } else {
         res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
@@ -114,9 +115,9 @@ USER_API.delete("/:id", (req, res) => {
   const userIndex = users.findIndex(u => u.id === userId);
 
   if (userIndex !== -1) {
-    saveUsersToFile();
       // Remove the user from the array
       const deletedUser = users.splice(userIndex, 1)[0];
+      saveUsersToFile();
       res.status(HttpCodes.SuccesfullRespons.Ok).send(deletedUser).end();
   } else {
       res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
