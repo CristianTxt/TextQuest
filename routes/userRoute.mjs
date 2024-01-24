@@ -16,8 +16,19 @@ function generateRandomString(length) {
   }
 
 
-USER_API.get("/:id", (req, res) => {});
-res.status(HttpCodes.SuccesfullRespons.Ok).send(users.id).end();
+  USER_API.get("/:id", (req, res) => {
+    const userId = req.params.id;
+  
+    // Find the user with the specified ID
+    const foundUser = users.find(u => u.id === userId);
+  
+    if (foundUser) {
+      res.status(HttpCodes.SuccesfullRespons.Ok).send(foundUser).end();
+    } else {
+      res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    }
+  });
+
 
 
 USER_API.get("/", (req, res) => {
