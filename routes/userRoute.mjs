@@ -1,6 +1,7 @@
 import express from "express";
 import User from "../modules/user.mjs";
 import HttpCodes from "../modules/httpErrorCodes.mjs";
+import fs from "fs"; 
 
 const USER_API = express.Router();
 
