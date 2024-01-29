@@ -5,6 +5,8 @@ import fs from "fs";
 
 const USER_API = express.Router();
 
+
+
 function generateRandomString(length) {
     const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = '';
@@ -32,6 +34,8 @@ function saveUsersToFile() {
       }
     });
   }
+
+
 
 
 
