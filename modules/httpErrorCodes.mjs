@@ -16,4 +16,17 @@ class HttpCodes {
 
 }
 
-export default HttpCodes;
+
+const HTTPMethods = { 
+POST: "POST",
+GET:"GET",
+PUT: "PUT",
+PATCH: "PATCH",
+DELETE: "DELETE"
+}
+
+
+
+
+
+export{  HttpCodes, HTTPMethods};
