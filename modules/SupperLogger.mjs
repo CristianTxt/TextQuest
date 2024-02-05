@@ -2,6 +2,7 @@ import Chalk from "chalk";
 import { HTTPMethods } from "./httpErrorCodes.mjs";
 
 
+
 let COLORS = {};
 COLORS[HTTPMethods.POST] = Chalk.yellow;
 COLORS[HTTPMethods.PATCH] = Chalk.yellow;
@@ -17,7 +18,7 @@ const colorize = (method) => {
         return COLORS[method](method);
     }
 
-    return COLORS.default(method);
+    return COLORS.Default(method);
 };
 
 
@@ -65,6 +66,18 @@ class SupperLogger {
 
     }
 
+    static log(msg, logLev1 = SupperLogger.LOGGING_LEVELS.NORMAL){ 
+        let logger = SupperLogger.instance;
+        if (logger.#globalThreshold > logLev1){ 
+            return;
+        }
+
+        logger.#writeToLog(msg);
+    }
+
+
+
+
 createAutoHTTPRequestLogger(){
 
     return this.createAutoHTTPRequestLogger({ threshold: SupperLogger.LOGGING_LEVELS.NORMAL});
@@ -98,10 +111,18 @@ createLimitedHTTPRequestLogger(options) {
 
     // TODO: This is just one simple thing to create structure and order. Can you do more?
     type = colorize(type);
-    console.log(when, type, path);
+    this.#writeToLog([when, type, path].join(" "));
 
 
     next();
+}
+
+#writeToLog(msg){ 
+    msg += "\n";
+    console.log(msg); 
+
+
+    fs.appendFile("./log.txt", msg , {encoding: "utf8"}, (err) => { });
 }
 
 }
