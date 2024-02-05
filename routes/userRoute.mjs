@@ -4,6 +4,7 @@ import HttpCodes from "../modules/httpErrorCodes.mjs";
 import fs from "fs"; 
 
 const USER_API = express.Router();
+USER_API.use(express.json); 
 
 
 
