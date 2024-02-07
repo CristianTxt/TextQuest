@@ -1,7 +1,8 @@
 import express from "express";
 import User from "../modules/user.mjs";
 import { HttpCodes } from "../modules/httpErrorCodes.mjs";
-import SupperLogger from "../modules/SupperLogger.mjs";
+import fs from "fs"
+
 
 
 const USER_API = express.Router();
@@ -60,9 +61,6 @@ USER_API.get("/:id", (req, res) => {
 });
 
 USER_API.get("/", (req, res) => {
-  SupperLogger.log("Demo og Logging tool");
-  SupperLogger.log(" a important msg", SupperLogger.LOGGING_LEVELS.CRITICAL);
-
 
 
     res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
@@ -90,20 +88,6 @@ USER_API.post("/", (req, res, next) => {
     } else {
         res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
     }  
-
-
-    let exsist = false;
-
-
-    if (!exsist) { 
-      users.push(users);
-      res.status(HttpCodes.SuccesfullRespons.Ok).end();
-    } else { 
-      res.status(HttpCodes.ClientSideErrorRespons.BadRequest).end();
-    }  
-
-
-
 });
 
 USER_API.put("/:id", (req, res) => {

@@ -1,6 +1,6 @@
 import  express  from "express"
 import USER_API from "./routes/userRoute.mjs";
-import SupperLogger from "./modules/SupperLogger.mjs";
+
 
 
 const server  = express(); 
@@ -9,9 +9,6 @@ const server  = express();
 const port = (process.env.PORT || 8080);
 server.set('port', port);
 
-
-const logger = new SupperLogger();
-server.use(logger.createLimitedHTTPRequestLogger());
 
 
 server.use(express.json());
