@@ -14,7 +14,7 @@ class HttpCodes {
         NotAcceptable: 406
     }
 
-    static ServerErrorRespons = { 
+    static ServerErrorRespons = {
         InternalError: 500,
         NotImplemented: 501,
     }
@@ -22,16 +22,16 @@ class HttpCodes {
 }
 
 
-const HTTPMethods = { 
-POST: "POST",
-GET:"GET",
-PUT: "PUT",
-PATCH: "PATCH",
-DELETE: "DELETE"
+const HTTPMethods = {
+    POST: "POST",
+    GET: "GET",
+    PUT: "PUT",
+    PATCH: "PATCH",
+    DELETE: "DELETE"
 }
 
 
 
 
 
-export{  HttpCodes, HTTPMethods};
+export { HttpCodes, HTTPMethods };

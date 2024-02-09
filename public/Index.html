@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User List</title>
 
-
-
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,23 +45,19 @@
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
 
         <button type="submit">Create User</button>
     </form>
 
-
     <div id="game-container">
         <div id="output">Welcome to the Text Adventure Game! Make your choices.</div>
         <div id="choices">
             <button onclick="makeChoice('choice1')">Choice 1</button>
             <button onclick="makeChoice('choice2')">Choice 2</button>
-            <!-- Add more buttons for additional choices -->
         </div>
+        <textarea id="choices-text" rows="10" cols="80" readonly></textarea>
     </div>
 
 
@@ -71,105 +65,156 @@
         document.addEventListener('DOMContentLoaded', () => {
             const userListElement = document.getElementById('user-list');
             const createUserForm = document.getElementById('create-user-form');
+            const choicesTextElement = document.getElementById('choices-text');
 
-            // Replace 'your_backend_api_url' with the actual URL of your backend API
+           
             const apiUrl = 'http://localhost:8080/user';
 
-            // Function to create a user
-            const createUser = (name, email, password) => {
+            const createUser = (name, password) => {
                 fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ name, email, password }),
+                    body: JSON.stringify({ name, password }),
                 })
                 .then(response => response.json())
                 .then(user => {
                     const listItem = document.createElement('li');
-                    listItem.textContent = `${user.name} - ${user.email}`;
+                    listItem.textContent = `${user.name}`;
                     userListElement.appendChild(listItem);
                 })
                 .catch(error => console.error('Error creating user:', error));
             };
 
-            // Event listener for form submission
             createUserForm.addEventListener('submit', (event) => {
                 event.preventDefault();
 
                 const name = document.getElementById('name').value;
-                const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
 
-                createUser(name, email, password);
+                createUser(name, password);
 
-                // Clear the form fields after submission
+              
                 createUserForm.reset();
             });
 
-            // Fetch existing users on page load
+            
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(users => {
-                    // Assuming your API response is an array of user objects
+                    
                     users.forEach(user => {
                         const listItem = document.createElement('li');
-                        listItem.textContent = `${user.name} - ${user.email}`;
+                        listItem.textContent = `${user.name}`;
                         userListElement.appendChild(listItem);
                     });
                 })
                 .catch(error => console.error('Error fetching data:', error));
         });
 
-          // Initial game state
-          let gameState = {
+        
+        let gameState = {
             currentScenario: 'intro',
             choices: {
                 intro: {
-                    GoLeft: 'nextScenario1',
-                    GoRxight: 'nextScenario2'
+                    LookAround: 'lookAround',
+                    OpenDoor: 'openDoor'
                 },
-                nextScenario1: {
-                    choice1: 'ending',
-                    choice2: 'deadEnd'
+                lookAround: {
+                    TakeKey: 'takeKey',
+                    OpenWindow: 'openWindow'
                 },
-                nextScenario2: {
-                    choice1: 'ending',
-                    choice2: 'deadEnd'
+                openDoor: {
+                    LookAround: 'lookAround',
+                    TryAgain: 'tryAgain'
                 },
-                // Add more scenarios and choices as needed
+                takeKey: {
+                    LookAroundAgain: 'LookAround2',
+                    WalkToDoor: 'walktodoor'
+                },
+                openWindow: {
+                    LookOutside: 'lookOutSide',
+                    LookDown: 'lookDown'
+                },
+                tryAgain: {
+                    LookAround: 'lookAround',
+                    ForceDoor: 'ForceDoor'
+                },
+                LookAround2: {
+                    CheckCabinet: 'Cabinet',
+                    WalkToLever: 'lever'
+                },
+                walktodoor: {
+                    UseTheKey: 'UseTheKey',
+                    GoToWindow: 'openWindow'
+                },
+                lookOutSide: {
+                    LookAround2: 'LookAround2',
+                    LookDown: 'lookDown'
+                },
+                lookDown: {
+                    GoDownRope: 'Dead',
+                    LookAround2: 'LookAround2'
+                },
+                unlockdoor: {
+                    EnterHallway: 'darkHallway',
+                    StayInRoom: 'stayInRoom'
+                },
+                UseTheKey: {
+                    OpenTheDoor: 'unlockdoor',
+                    LookAroundRoom: 'LookaroundRoom'
+                }
             },
             scenarioText: {
-                intro: 'You find yourself in a dark room. What do you do?',
-                nextScenario1: 'You chose to go left. What next?',
-                nextScenario2: 'You chose to go right. What next?',
+                intro: 'You wake up in a mysterious room. Its dark but you can barely see that there is a door in front of you. What do you do?',
+                lookAround: 'You look around vaguely. You find an old key on a table and a window that is slightly open. What do you do?',
+                openDoor: 'You try to open the door but it\'s locked and it won\'t budge. What do you do?',
+                takeKey: 'You grab the key and put it into your pocket.',
+                openWindow: 'You walk to the half open window and open it. What do you do?',
+                tryAgain: 'You try to open the door again, a bit harder this time. The door hinges creaking, but it won\'t open. What do you do?',
+                LookAround2: 'You look around the room more, trying to look carefully. You see a cabinet and a lever beside the cabinet. What do you do?',
+                walktodoor: 'You walk up to the door and notice a keyhole. What do you do?',
+                lookOutSide: 'You look out the window and see a dark, dead forest. You hear crows scream, the moon shining. What do you do?',
+                lookDown: 'You look down at the edge of the window. What you see is an old rope that leads down a tower. What do you do?',
+                unlockdoor: 'The door creaks open, revealing a dark hallway.',
+                UseTheKey: 'You use the key to open the door. It clicks and the door is unlocked. What do you do?',
                 ending: 'Congratulations! You have completed the adventure.',
                 deadEnd: 'Oops! You reached a dead end. Game over.'
-                // Add more scenario texts as needed
-            }
+            },
+            playerChoices: []
         };
 
-        // Function to update the game based on user choice
+        
         function makeChoice(choice) {
             const nextScenario = gameState.choices[gameState.currentScenario][choice];
             if (nextScenario) {
+                gameState.playerChoices.push({
+                    scenarioText: gameState.scenarioText[gameState.currentScenario],
+                    choice: choice
+                });
                 gameState.currentScenario = nextScenario;
                 updateGame();
             }
         }
 
-        // Function to update the HTML with the current game state
+        
         function updateGame() {
             const outputElement = document.getElementById('output');
             const choicesElement = document.getElementById('choices');
+            const choicesTextElement = document.getElementById('choices-text');
 
-            // Update the output text
+            
             outputElement.textContent = gameState.scenarioText[gameState.currentScenario];
+            
+            // Update choices text box
+            choicesTextElement.value = '';
+            gameState.playerChoices.forEach((choice, index) => {
+                choicesTextElement.value += `${index + 1}. Scenario: ${choice.scenarioText}, Choice: ${choice.choice}\n`;
+            });
 
-            // Clear previous choices
             choicesElement.innerHTML = '';
 
-            // Add new choices buttons
             Object.keys(gameState.choices[gameState.currentScenario]).forEach(choice => {
                 const button = document.createElement('button');
                 button.textContent = choice;
@@ -178,7 +223,7 @@
             });
         }
 
-        // Initial game update
+        
         updateGame();
     </script>
 
