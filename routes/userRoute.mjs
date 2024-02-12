@@ -27,14 +27,6 @@ try {
   logger.log('Error reading users file:', SuperLogger.LOGGING_LEVELS.CRITICAL);
 }
 
-function saveUsersToFile() {
-  fs.writeFileSync('users.json', JSON.stringify(users), 'utf8', (err) => {
-    if (err) {
-      logger.log('Error writing users file:', SuperLogger.LOGGING_LEVELS.CRITICAL);
-    }
-  });
-}
-
 USER_API.get("/:id", (req, res) => {
   const userId = req.params.id;
 
@@ -55,7 +47,6 @@ USER_API.post("/", (req, res, next) => {
   const { name, password } = req.body;
 
   if (name !== "" && password !== "") {
-    saveUsersToFile();
     const user = new User();
     let newUserId;
     do {
@@ -67,7 +58,6 @@ USER_API.post("/", (req, res, next) => {
     user.pswHash = password;
 
     users.push(user);
-    saveUsersToFile();
     res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
   } else {
     res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
@@ -83,7 +73,6 @@ USER_API.put("/:id", (req, res) => {
   if (userIndex !== -1) {
     if (name) users[userIndex].name = name;
     if (password) users[userIndex].pswHash = password;
-    saveUsersToFile();
     res.status(HttpCodes.SuccesfullRespons.Ok).send(users[userIndex]).end();
   } else {
     res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
@@ -97,18 +86,14 @@ USER_API.delete("/:id", (req, res) => {
 
   if (userIndex !== -1) {
     const deletedUser = users.splice(userIndex, 1)[0];
-    saveUsersToFile();
     res.status(HttpCodes.SuccesfullRespons.Ok).send(deletedUser).end();
   } else {
     res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
   }
 });
 
-
-
 const autoLoggerMiddleware = logger.createAutoHTTPRequestLogger();
 USER_API.use(autoLoggerMiddleware);
-
 
 const limitedLoggerMiddleware = logger.createLimitedHTTPRequestLogger({ threshold: SuperLogger.LOGGING_LEVELS.IMPORTANT });
 USER_API.use(limitedLoggerMiddleware);

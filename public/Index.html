@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User List</title>
+    <title>User List & Text Adventure Game</title>
 
     <style>
         body {
@@ -36,10 +36,13 @@
 </head>
 <body>
 
-    <h1>User List</h1>
+    <h1>User List & Text Adventure Game</h1>
 
+    <!-- User List Section -->
+    <h2>User List</h2>
     <ul id="user-list"></ul>
 
+    <!-- Create User Section -->
     <h2>Create User</h2>
     <form id="create-user-form">
         <label for="name">Name:</label>
@@ -51,25 +54,24 @@
         <button type="submit">Create User</button>
     </form>
 
+    <!-- Text Adventure Game Section -->
     <div id="game-container">
         <div id="output">Welcome to the Text Adventure Game! Make your choices.</div>
-        <div id="choices">
-            <button onclick="makeChoice('choice1')">Choice 1</button>
-            <button onclick="makeChoice('choice2')">Choice 2</button>
-        </div>
+        <div id="choices"></div>
         <textarea id="choices-text" rows="10" cols="80" readonly></textarea>
     </div>
 
-
+    <!-- JavaScript Code -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const userListElement = document.getElementById('user-list');
             const createUserForm = document.getElementById('create-user-form');
             const choicesTextElement = document.getElementById('choices-text');
 
-           
-            const apiUrl = 'http://localhost:8080/user';
+            // Backend API URL with port 5432
+            const apiUrl = 'http://localhost:5432'; // Update the API URL as needed
 
+            // Function to create a user
             const createUser = (name, password) => {
                 fetch(apiUrl, {
                     method: 'POST',
@@ -87,6 +89,7 @@
                 .catch(error => console.error('Error creating user:', error));
             };
 
+            // Event listener for form submission
             createUserForm.addEventListener('submit', (event) => {
                 event.preventDefault();
 
@@ -95,15 +98,13 @@
 
                 createUser(name, password);
 
-              
                 createUserForm.reset();
             });
 
-            
+            // Fetch users from the backend
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(users => {
-                    
                     users.forEach(user => {
                         const listItem = document.createElement('li');
                         listItem.textContent = `${user.name}`;
@@ -113,7 +114,7 @@
                 .catch(error => console.error('Error fetching data:', error));
         });
 
-        
+        // Text Adventure Game Logic
         let gameState = {
             currentScenario: 'intro',
             choices: {
@@ -121,71 +122,15 @@
                     LookAround: 'lookAround',
                     OpenDoor: 'openDoor'
                 },
-                lookAround: {
-                    TakeKey: 'takeKey',
-                    OpenWindow: 'openWindow'
-                },
-                openDoor: {
-                    LookAround: 'lookAround',
-                    TryAgain: 'tryAgain'
-                },
-                takeKey: {
-                    LookAroundAgain: 'LookAround2',
-                    WalkToDoor: 'walktodoor'
-                },
-                openWindow: {
-                    LookOutside: 'lookOutSide',
-                    LookDown: 'lookDown'
-                },
-                tryAgain: {
-                    LookAround: 'lookAround',
-                    ForceDoor: 'ForceDoor'
-                },
-                LookAround2: {
-                    CheckCabinet: 'Cabinet',
-                    WalkToLever: 'lever'
-                },
-                walktodoor: {
-                    UseTheKey: 'UseTheKey',
-                    GoToWindow: 'openWindow'
-                },
-                lookOutSide: {
-                    LookAround2: 'LookAround2',
-                    LookDown: 'lookDown'
-                },
-                lookDown: {
-                    GoDownRope: 'Dead',
-                    LookAround2: 'LookAround2'
-                },
-                unlockdoor: {
-                    EnterHallway: 'darkHallway',
-                    StayInRoom: 'stayInRoom'
-                },
-                UseTheKey: {
-                    OpenTheDoor: 'unlockdoor',
-                    LookAroundRoom: 'LookaroundRoom'
-                }
+                // Define other scenarios and choices here...
             },
             scenarioText: {
                 intro: 'You wake up in a mysterious room. Its dark but you can barely see that there is a door in front of you. What do you do?',
-                lookAround: 'You look around vaguely. You find an old key on a table and a window that is slightly open. What do you do?',
-                openDoor: 'You try to open the door but it\'s locked and it won\'t budge. What do you do?',
-                takeKey: 'You grab the key and put it into your pocket.',
-                openWindow: 'You walk to the half open window and open it. What do you do?',
-                tryAgain: 'You try to open the door again, a bit harder this time. The door hinges creaking, but it won\'t open. What do you do?',
-                LookAround2: 'You look around the room more, trying to look carefully. You see a cabinet and a lever beside the cabinet. What do you do?',
-                walktodoor: 'You walk up to the door and notice a keyhole. What do you do?',
-                lookOutSide: 'You look out the window and see a dark, dead forest. You hear crows scream, the moon shining. What do you do?',
-                lookDown: 'You look down at the edge of the window. What you see is an old rope that leads down a tower. What do you do?',
-                unlockdoor: 'The door creaks open, revealing a dark hallway.',
-                UseTheKey: 'You use the key to open the door. It clicks and the door is unlocked. What do you do?',
-                ending: 'Congratulations! You have completed the adventure.',
-                deadEnd: 'Oops! You reached a dead end. Game over.'
+                // Define scenario texts here...
             },
             playerChoices: []
         };
 
-        
         function makeChoice(choice) {
             const nextScenario = gameState.choices[gameState.currentScenario][choice];
             if (nextScenario) {
@@ -198,12 +143,10 @@
             }
         }
 
-        
         function updateGame() {
             const outputElement = document.getElementById('output');
             const choicesElement = document.getElementById('choices');
             const choicesTextElement = document.getElementById('choices-text');
-
             
             outputElement.textContent = gameState.scenarioText[gameState.currentScenario];
             
@@ -214,7 +157,6 @@
             });
 
             choicesElement.innerHTML = '';
-
             Object.keys(gameState.choices[gameState.currentScenario]).forEach(choice => {
                 const button = document.createElement('button');
                 button.textContent = choice;
@@ -223,8 +165,7 @@
             });
         }
 
-        
-        updateGame();
+        updateGame(); // Initial game update
     </script>
 
 </body>

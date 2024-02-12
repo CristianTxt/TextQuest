@@ -1,5 +1,6 @@
 import express from "express"
 import USER_API from "./routes/userRoute.mjs";
+import SuperLogger from "./modules/SupperLogger.mjs";
 
 
 
@@ -9,7 +10,8 @@ const server = express();
 const port = (process.env.PORT || 8080);
 server.set('port', port);
 
-
+const logger = new SuperLogger();
+server.use(logger.createAutoHTTPRequestLogger());
 
 server.use(express.json());
 server.use(express.static('public'));
