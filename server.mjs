@@ -1,6 +1,7 @@
 import express from "express"
 import USER_API from "./routes/userRoute.mjs";
 import SuperLogger from "./modules/SupperLogger.mjs";
+import 'dotenv/config'
 
 
 

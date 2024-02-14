@@ -19,13 +19,7 @@ function generateRandomString(length) {
   return result;
 }
 
-let users = [];
-try {
-  const data = fs.readFileSync('users.json', 'utf8');
-  users = JSON.parse(data);
-} catch (err) {
-  logger.log('Error reading users file:', SuperLogger.LOGGING_LEVELS.CRITICAL);
-}
+
 
 USER_API.get("/:id", (req, res) => {
   const userId = req.params.id;
