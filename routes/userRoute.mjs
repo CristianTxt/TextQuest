@@ -24,7 +24,7 @@ function generateRandomString(length) {
 USER_API.get("/:id", (req, res) => {
   const userId = req.params.id;
 
-  const foundUser = users.find(u => u.id === userId);
+  const foundUser = User.find(u => u.id === userId);
 
   if (foundUser) {
     res.status(HttpCodes.SuccesfullRespons.Ok).send(foundUser).end();
@@ -62,7 +62,7 @@ USER_API.put("/:id", (req, res) => {
   const userId = req.params.id;
   const { name, password } = req.body;
 
-  const userIndex = users.findIndex(u => u.id === userId);
+  const userIndex = User.findIndex(u => u.id === userId);
 
   if (userIndex !== -1) {
     if (name) users[userIndex].name = name;
