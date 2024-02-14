@@ -34,7 +34,7 @@ USER_API.get("/:id", (req, res) => {
 });
 
 USER_API.get("/", (req, res) => {
-  res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
+  res.status(HttpCodes.SuccesfullRespons.Ok).send(User).end();
 });
 
 USER_API.post("/", (req, res, next) => {
@@ -45,14 +45,14 @@ USER_API.post("/", (req, res, next) => {
     let newUserId;
     do {
       newUserId = generateRandomString(7);
-    } while (users.some(u => u.id === newUserId));
+    } while (user.some(u => u.id === newUserId));
 
     user.id = newUserId;
     user.name = name;
     user.pswHash = password;
 
     users.push(user);
-    res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
+    res.status(HttpCodes.SuccesfullRespons.Ok).send(User).end();
   } else {
     res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
   }
@@ -65,9 +65,9 @@ USER_API.put("/:id", (req, res) => {
   const userIndex = User.findIndex(u => u.id === userId);
 
   if (userIndex !== -1) {
-    if (name) users[userIndex].name = name;
-    if (password) users[userIndex].pswHash = password;
-    res.status(HttpCodes.SuccesfullRespons.Ok).send(users[userIndex]).end();
+    if (name) User[userIndex].name = name;
+    if (password) User[userIndex].pswHash = password;
+    res.status(HttpCodes.SuccesfullRespons.Ok).send(User[userIndex]).end();
   } else {
     res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
   }
@@ -76,10 +76,10 @@ USER_API.put("/:id", (req, res) => {
 USER_API.delete("/:id", (req, res) => {
   const userId = req.params.id;
 
-  const userIndex = users.findIndex(u => u.id === userId);
+  const userIndex = User.findIndex(u => u.id === userId);
 
   if (userIndex !== -1) {
-    const deletedUser = users.splice(userIndex, 1)[0];
+    const deletedUser = User.splice(userIndex, 1)[0];
     res.status(HttpCodes.SuccesfullRespons.Ok).send(deletedUser).end();
   } else {
     res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
