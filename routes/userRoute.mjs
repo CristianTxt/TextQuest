@@ -1,7 +1,7 @@
 import express from "express";
 import User from "../modules/user.mjs";
+import DBManager from "../modules/storageManager.mjs";
 import { HttpCodes } from "../modules/httpConstants.mjs";
-import fs from "fs";
 import SuperLogger from "../modules/SupperLogger.mjs";
 
 const USER_API = express.Router();
@@ -19,70 +19,72 @@ function generateRandomString(length) {
   return result;
 }
 
-
-
-USER_API.get("/:id", (req, res) => {
+USER_API.get("/:id", async (req, res) => {
   const userId = req.params.id;
 
-  const foundUser = User.find(u => u.id === userId);
+  try {
+    const foundUser = await DBManager.getUserById(userId);
 
-  if (foundUser) {
-    res.status(HttpCodes.SuccesfullRespons.Ok).send(foundUser).end();
-  } else {
-    res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    if (foundUser) {
+      res.status(HttpCodes.SuccesfullRespons.Ok).send(foundUser).end();
+    } else {
+      res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(HttpCodes.ServerSideErrorRespons.InternalServerError).send("Internal Server Error").end();
   }
 });
 
-USER_API.get("/", (req, res) => {
-  res.status(HttpCodes.SuccesfullRespons.Ok).send(User).end();
+USER_API.get("/", async (req, res) => {
+  try {
+    const users = await DBManager.getAllUsers();
+    res.status(HttpCodes.SuccesfullRespons.Ok).send(users).end();
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(HttpCodes.ServerSideErrorRespons.InternalServerError).send("Internal Server Error").end();
+  }
 });
 
-USER_API.post("/", (req, res, next) => {
+USER_API.post("/", async (req, res) => {
   const { name, password } = req.body;
 
-  if (name !== "" && password !== "") {
-    const user = new User();
-    let newUserId;
-    do {
-      newUserId = generateRandomString(7);
-    } while (user.some(u => u.id === newUserId));
+  if (!name || !password) {
+    res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Missing data fields").end();
+    return;
+  }
 
-    user.id = newUserId;
-    user.name = name;
-    user.pswHash = password;
-
-    users.push(user);
-    res.status(HttpCodes.SuccesfullRespons.Ok).send(User).end();
-  } else {
-    res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
+  try {
+    const newUser = await DBManager.createUser({ name, password });
+    res.status(HttpCodes.SuccesfullRespons.Ok).send(newUser).end();
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(HttpCodes.ServerSideErrorRespons.InternalServerError).send("Internal Server Error").end();
   }
 });
 
-USER_API.put("/:id", (req, res) => {
+USER_API.put("/:id", async (req, res) => {
   const userId = req.params.id;
   const { name, password } = req.body;
 
-  const userIndex = User.findIndex(u => u.id === userId);
-
-  if (userIndex !== -1) {
-    if (name) User[userIndex].name = name;
-    if (password) User[userIndex].pswHash = password;
-    res.status(HttpCodes.SuccesfullRespons.Ok).send(User[userIndex]).end();
-  } else {
-    res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+  try {
+    const updatedUser = await DBManager.updateUser({ id: userId, name, password });
+    res.status(HttpCodes.SuccesfullRespons.Ok).send(updatedUser).end();
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(HttpCodes.ServerSideErrorRespons.InternalServerError).send("Internal Server Error").end();
   }
 });
 
-USER_API.delete("/:id", (req, res) => {
+USER_API.delete("/:id", async (req, res) => {
   const userId = req.params.id;
 
-  const userIndex = User.findIndex(u => u.id === userId);
-
-  if (userIndex !== -1) {
-    const deletedUser = User.splice(userIndex, 1)[0];
+  try {
+    const deletedUser = await DBManager.deleteUser(userId);
     res.status(HttpCodes.SuccesfullRespons.Ok).send(deletedUser).end();
-  } else {
-    res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(HttpCodes.ServerSideErrorRespons.InternalServerError).send("Internal Server Error").end();
   }
 });
 
