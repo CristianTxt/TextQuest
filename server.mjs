@@ -28,6 +28,7 @@ server.get("/", (req, res, next) => {
 
 
     res.status(200).send(JSON.stringify({ msg: "This is a message..." })).end();
+    next
 });
 
 server.listen(server.get('port'), function () {
