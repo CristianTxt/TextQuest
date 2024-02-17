@@ -1,27 +1,35 @@
-import express from "express";
-import path from "path";
+import express from "express"
 import USER_API from "./routes/userRoute.mjs";
 import SuperLogger from "./modules/SupperLogger.mjs";
-import 'dotenv/config';
+import 'dotenv/config'
+
+
 
 const server = express();
 
-const port = process.env.PORT || 8080;
+
+const port = (process.env.PORT || 8080);
 server.set('port', port);
 
 const logger = new SuperLogger();
 server.use(logger.createAutoHTTPRequestLogger());
-server.use(express.json());
-server.use(express.static(path.join(__dirname, 'public')));
 
-// Mounting the user API routes
+server.use(express.json());
+server.use(express.static('public'));
+
 server.use("/user", USER_API);
 
-// Serving index.html for the root route
-server.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+server.use(express.static('public'));
+
+server.get("/", (req, res, next) => {
+
+
+    req.originalUrl
+
+
+    res.status(200).send(JSON.stringify({ msg: "This is a message..." })).end();
 });
 
-server.listen(server.get('port'), () => {
-    console.log(`Server running on port ${server.get('port')}`);
+server.listen(server.get('port'), function () {
+    console.log('server running', server.get('port'));
 });
