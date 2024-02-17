@@ -21,6 +21,10 @@ server.use("/user", USER_API);
 
 server.use(express.static('public'));
 
+server.get("/", (req, res) => {
+    res.sendFile(__dirname + 'public/index.html');
+});
+
 server.get("/", (req, res, next) => {
 
 
