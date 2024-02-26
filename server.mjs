@@ -19,7 +19,7 @@ server.use(express.static('Public'));
 
 server.use("/user", USER_API);
 
-server.use(express.static('Public'));
+
 
 server.get("/", (req, res, next) => {
 
