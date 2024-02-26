@@ -22,11 +22,7 @@ server.use("/user", USER_API);
 
 
 server.get("/", (req, res, next) => {
-
-
-    req.originalUrl
-
-
+   
     res.status(200).send(JSON.stringify({ msg: "This is a message..." })).end();
 });
 
