@@ -15,7 +15,7 @@ const logger = new SuperLogger();
 server.use(logger.createAutoHTTPRequestLogger());
 
 server.use(express.json());
-server.use(express.static('Public'));
+server.use(express.static('public'));
 
 server.use("/user", USER_API);
 
