@@ -19,7 +19,7 @@ server.use(logger.createAutoHTTPRequestLogger());
 
 
 
-
+server.use(express.json());
 
 server.use(express.static('public'));
 
