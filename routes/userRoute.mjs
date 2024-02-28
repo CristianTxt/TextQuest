@@ -1,25 +1,13 @@
 import express from "express";
 import User from "../modules/user.mjs";
 import { HttpCodes } from "../modules/httpConstants.mjs";
-import fs from "fs";
+import bcrypt from "bcrypt"; // Import bcrypt for password hashing
 import SuperLogger from "../modules/SupperLogger.mjs";
 
 const USER_API = express.Router();
 USER_API.use(express.json());
 
 const logger = new SuperLogger();
-
-function generateRandomString(length) {
-  const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    result += characters.charAt(randomIndex);
-  }
-  return result;
-}
-
-
 
 USER_API.get("/:id", (req, res) => {
   const userId = req.params.id;
@@ -37,39 +25,60 @@ USER_API.get("/", (req, res) => {
   res.status(HttpCodes.SuccesfullRespons.Ok).send(User).end();
 });
 
-USER_API.post("/", (req, res, next) => {
+USER_API.post("/register", async (req, res, next) => {
   const { name, password } = req.body;
 
-  if (name !== "" && password !== "") {
-    const user = new User();
-    let newUserId;
-    do {
-      newUserId = generateRandomString(7);
-    } while (user.some(u => u.id === newUserId));
+  try {
+    if (name && password) {
+      // Hash the password before storing it
+      const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
 
-    user.id = newUserId;
-    user.name = name;
-    user.pswHash = password;
+      const newUser = new User({
+        name: name,
+        pswHash: hashedPassword // Store hashed password
+      });
 
-    users.push(user);
-    res.status(HttpCodes.SuccesfullRespons.Ok).send(User).end();
-  } else {
-    res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
+      // Save the user to the database
+      await newUser.save();
+
+      res.status(HttpCodes.SuccesfullRespons.Ok).send(newUser).end();
+    } else {
+      res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Missing data fields").end();
+    }
+  } catch (error) {
+    console.error("Error registering user:", error);
+    res.status(HttpCodes.ServerErrorRespons.InternalError).send("Error registering user").end();
   }
 });
 
-USER_API.put("/:id", (req, res) => {
+USER_API.put("/:id", async (req, res) => {
   const userId = req.params.id;
   const { name, password } = req.body;
 
-  const userIndex = User.findIndex(u => u.id === userId);
+  try {
+    // Find the user by ID
+    const foundUser = User.find(u => u.id === userId);
 
-  if (userIndex !== -1) {
-    if (name) User[userIndex].name = name;
-    if (password) User[userIndex].pswHash = password;
-    res.status(HttpCodes.SuccesfullRespons.Ok).send(User[userIndex]).end();
-  } else {
-    res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    if (foundUser) {
+      // Update user fields
+      if (name) foundUser.name = name;
+
+      if (password) {
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
+        foundUser.pswHash = hashedPassword;
+      }
+
+      // Save the updated user to the database
+      await foundUser.save();
+
+      res.status(HttpCodes.SuccesfullRespons.Ok).send(foundUser).end();
+    } else {
+      res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    }
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(HttpCodes.ServerErrorRespons.InternalError).send("Error updating user").end();
   }
 });
 

@@ -68,8 +68,8 @@
             const createUserForm = document.getElementById('create-user-form');
             const choicesTextElement = document.getElementById('choices-text');
 
-            // Backend API URL
-            const apiUrl = "https://textquest-tgbs.onrender.com"; // Update the API URL as needed
+            // Backend API URL with port 5432
+            const apiUrl = 'http://localhost:8080/user' || "https://textquest-tgbs.onrender.com"; // Update the API URL as needed
 
             // Function to create a user
             const createUser = (name, password) => {
