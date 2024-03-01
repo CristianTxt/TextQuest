@@ -9,7 +9,7 @@ import SuperLogger from "./modules/SupperLogger.mjs";
 const server = express();
 
 
-const port = (process.env.PORT || 8080);
+const port = (process.env.PORT || 5432);
 server.set('port', port);
 
 

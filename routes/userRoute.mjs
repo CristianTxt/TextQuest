@@ -1,7 +1,7 @@
 import express from "express";
 import User from "../modules/user.mjs";
 import { HttpCodes } from "../modules/httpConstants.mjs";
-import bcrypt from "bcrypt"; // Import bcrypt for password hashing
+import bcrypt from "bcrypt"; 
 import SuperLogger from "../modules/SupperLogger.mjs";
 
 const USER_API = express.Router();
@@ -51,6 +51,10 @@ USER_API.post("/register", async (req, res, next) => {
   }
 });
 
+
+
+
+
 USER_API.put("/:id", async (req, res) => {
   const userId = req.params.id;
   const { name, password } = req.body;
@@ -82,6 +86,10 @@ USER_API.put("/:id", async (req, res) => {
   }
 });
 
+
+
+
+
 USER_API.delete("/:id", (req, res) => {
   const userId = req.params.id;
 
@@ -94,6 +102,9 @@ USER_API.delete("/:id", (req, res) => {
     res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
   }
 });
+
+
+
 
 const autoLoggerMiddleware = logger.createAutoHTTPRequestLogger();
 USER_API.use(autoLoggerMiddleware);
