@@ -102,3 +102,15 @@ Database connection  postgres://textquest_user:yQJL9uUkUFsvCSs2TbQCJXjcIywB5vXK@
 13:02:29 [33mPOST[39m /user/register
 13:10:32 [90mOPTIONS[39m /user
 13:10:39 [33mPOST[39m /user/register
+####################
+Server enviorment local
+Database connection  TextQuest://postgres:postgres@localhost:5432/postgres
+####################
+####################
+Server enviorment local
+Database connection  TextQuest://postgres:postgres@localhost:5432/postgres
+####################
+####################
+Server enviorment local
+Database connection  TextQuest://postgres:postgres@localhost:5432/postgres
+####################
