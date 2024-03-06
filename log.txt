@@ -68,3 +68,37 @@ Demo of logging tool
 A important msg
 12:47:54 [33mPOST[39m /user/register
 12:49:21 [33mPOST[39m /user
+####################
+Server enviorment local
+Database connection  postgres://textquest_user:yQJL9uUkUFsvCSs2TbQCJXjcIywB5vXK@dpg-cn53ipf109ks73f102jg-a.frankfurt-postgres.render.com/textquest
+####################
+12:52:12 [32mGET[39m /
+12:52:13 [32mGET[39m /users
+12:52:26 [90mOPTIONS[39m /user
+12:52:30 [32mGET[39m /users
+####################
+Server enviorment local
+Database connection  postgres://textquest_user:yQJL9uUkUFsvCSs2TbQCJXjcIywB5vXK@dpg-cn53ipf109ks73f102jg-a.frankfurt-postgres.render.com/textquest
+####################
+12:54:10 [32mGET[39m /users
+####################
+####################
+Server enviorment local
+Database connection  postgres://textquest_user:yQJL9uUkUFsvCSs2TbQCJXjcIywB5vXK@dpg-cn53ipf109ks73f102jg-a.frankfurt-postgres.render.com/textquest
+12:55:20 [32mGET[39m /
+12:55:21 [32mGET[39m /users
+12:55:37 [90mOPTIONS[39m /user
+####################
+Server enviorment local
+Database connection  postgres://textquest_user:yQJL9uUkUFsvCSs2TbQCJXjcIywB5vXK@dpg-cn53ipf109ks73f102jg-a.frankfurt-postgres.render.com/textquest
+####################
+12:57:18 [32mGET[39m /
+####################
+Server enviorment local
+Database connection  postgres://textquest_user:yQJL9uUkUFsvCSs2TbQCJXjcIywB5vXK@dpg-cn53ipf109ks73f102jg-a.frankfurt-postgres.render.com/textquest
+####################
+13:02:02 [32mGET[39m /user/id
+13:02:19 [32mGET[39m /
+13:02:29 [33mPOST[39m /user/register
+13:10:32 [90mOPTIONS[39m /user
+13:10:39 [33mPOST[39m /user/register

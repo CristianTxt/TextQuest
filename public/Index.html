@@ -7,7 +7,6 @@
     <title>My app</title>
 </head>
 
-
 <body>
 
     <div>
@@ -17,18 +16,25 @@
         <button id="createUserButton">Create User</button>
     </div>
 
+    <hr>
+
+    <div id="userList">
+        <h2>User List</h2>
+        <ul id="users"></ul>
+    </div>
+
     <script>
 
         const createUserButton = document.getElementById("createUserButton");
+        const userList = document.getElementById("users");
 
         createUserButton.onclick = async function (e) {
-
             const name = document.getElementById("name").value;
             const email = document.getElementById("email").value;
             const pswHash = document.getElementById("pswHash").value;
             const user = { name, email, pswHash };
-            const respon = await postTo("/user", user);
-
+            const response = await postTo("/user", user);
+            // Handle response if needed
         }
 
         async function postTo(url, data) {
@@ -40,8 +46,8 @@
                 body: JSON.stringify(data),
             };
 
-            const respon = await fetch(url, header);
-            return respon;
+            const response = await fetch(url, header);
+            return response;
         }
 
     </script>

@@ -10,19 +10,34 @@ USER_API.use(express.json()); // This makes it so that express parses all incomi
 const users = [];
 
 USER_API.get('/', (req, res, next) => {
+    res.status(HTTPCodes.SuccesfullRespons.Ok).send(User).end();
     SuperLogger.log("Demo of logging tool");
     SuperLogger.log("A important msg", SuperLogger.LOGGING_LEVELS.CRTICAL);
 })
 
 
-USER_API.get('/:id', (req, res, next) => {
+// Define a route to handle GET requests for retrieving a specific user by ID
+USER_API.get('/:id', async (req, res, next) => {
+    const userId = req.params.id;
 
-    // Tip: All the information you need to get the id part of the request can be found in the documentation 
-    // https://expressjs.com/en/guide/routing.html (Route parameters)
+    try {
+        const client = await pool.connect();
+        const result = await client.query('SELECT * FROM "Users" WHERE id = $1', [userId]);
+        client.release();
 
-    /// TODO: 
-    // Return user object
-})
+        if (result.rows.length === 0) {
+            res.status(404).json({ message: 'User not found' });
+        } else {
+            const user = result.rows[0];
+            res.json(user);
+        }
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+    
 
 USER_API.post('/register', async (req, res, next) => {
 
@@ -70,3 +85,5 @@ USER_API.delete('/:id', (req, res) => {
 });
 
 export default USER_API
+
+export { USER_API};
