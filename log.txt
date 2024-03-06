@@ -35,3 +35,36 @@
 17:36:52 [32mGET[39m /user/S2WUWTR
 17:37:05 [32mGET[39m /user/
 17:37:27 [32mGET[39m /
+####################
+Server enviorment local
+Database connection  
+####################
+12:36:27 [33mPOST[39m /user/register
+12:36:33 [33mPOST[39m /user/register
+####################
+Server enviorment local
+Database connection  
+####################
+12:38:00 [33mPOST[39m /user/register
+12:42:51 [33mPOST[39m /user/register
+12:42:57 [33mPOST[39m /user/register
+12:43:01 [33mPOST[39m /user/register
+####################
+Server enviorment local
+Database connection  postgres://textquest_user:yQJL9uUkUFsvCSs2TbQCJXjcIywB5vXK@dpg-cn53ipf109ks73f102jg-a.frankfurt-postgres.render.com/textquest
+####################
+12:45:12 [33mPOST[39m /user/register
+####################
+Server enviorment local
+####################
+Database connection  postgres://textquest_user:yQJL9uUkUFsvCSs2TbQCJXjcIywB5vXK@dpg-cn53ipf109ks73f102jg-a.frankfurt-postgres.render.com/textquest
+12:45:55 [33mPOST[39m /user/register
+12:47:08 [32mGET[39m /
+12:47:09 [32mGET[39m /favicon.ico
+12:47:17 [33mPOST[39m /user
+12:47:34 [32mGET[39m /
+12:47:42 [32mGET[39m /user/
+Demo of logging tool
+A important msg
+12:47:54 [33mPOST[39m /user/register
+12:49:21 [33mPOST[39m /user
