@@ -7,6 +7,7 @@
     <title>My app</title>
 </head>
 
+
 <body>
 
     <div>
@@ -16,118 +17,33 @@
         <button id="createUserButton">Create User</button>
     </div>
 
-    <hr>
+    <script>
 
-    <div id="userList">
-        <h2>User List</h2>
-        <ul id="users"></ul>
-    </div>
+        const createUserButton = document.getElementById("createUserButton");
 
-    <!-- JavaScript Code -->
-    <script> 
-        document.addEventListener('DOMContentLoaded', () => {
-            const userListElement = document.getElementById('user-list');
-            const createUserForm = document.getElementById('create-user-form');
-            const choicesTextElement = document.getElementById('choices-text');
+        createUserButton.onclick = async function (e) {
 
-            // Backend API URL
-            const apiUrl = "https://textquest-tgbs.onrender.com"; // Update the API URL as needed
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const pswHash = document.getElementById("pswHash").value;
+            const user = { name, email, pswHash };
+            const respon = await postTo("/user", user);
 
-            // Function to create a user
-            const createUser = (name, password) => {
-                fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ name, password }),
-                })
-                .then(response => response.json())
-                .then(user => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = `${user.name}`;
-                    userListElement.appendChild(listItem);
-                })
-                .catch(error => console.error('Error creating user:', error));
+        }
+
+        async function postTo(url, data) {
+            const header = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
             };
 
-            // Event listener for form submission
-            createUserForm.addEventListener('submit', (event) => {
-                event.preventDefault();
-
-                const name = document.getElementById('name').value;
-                const password = document.getElementById('password').value;
-
-                createUser(name, password);
-
-                createUserForm.reset();
-            });
-
-            // Fetch users from the backend
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(users => {
-                    users.forEach(user => {
-                        const listItem = document.createElement('li');
-                        listItem.textContent = `${user.name}`;
-                        userListElement.appendChild(listItem);
-                    });
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        });
-
-        // Text Adventure Game Logic
-        let gameState = {
-            currentScenario: 'intro',
-            choices: {
-                intro: {
-                    LookAround: 'lookAround',
-                    OpenDoor: 'openDoor'
-                },
-                // Define other scenarios and choices here...
-            },
-            scenarioText: {
-                intro: 'You wake up in a mysterious room. Its dark but you can barely see that there is a door in front of you. What do you do?',
-                // Define scenario texts here...
-            },
-            playerChoices: []
-        };
-
-        function makeChoice(choice) {
-            const nextScenario = gameState.choices[gameState.currentScenario][choice];
-            if (nextScenario) {
-                gameState.playerChoices.push({
-                    scenarioText: gameState.scenarioText[gameState.currentScenario],
-                    choice: choice
-                });
-                gameState.currentScenario = nextScenario;
-                updateGame();
-            }
+            const respon = await fetch(url, header);
+            return respon;
         }
 
-        function updateGame() {
-            const outputElement = document.getElementById('output');
-            const choicesElement = document.getElementById('choices');
-            const choicesTextElement = document.getElementById('choices-text');
-            
-            outputElement.textContent = gameState.scenarioText[gameState.currentScenario];
-            
-            // Update choices text box
-            choicesTextElement.value = '';
-            gameState.playerChoices.forEach((choice, index) => {
-                choicesTextElement.value += `${index + 1}. Scenario: ${choice.scenarioText}, Choice: ${choice.choice}\n`;
-            });
-
-            choicesElement.innerHTML = '';
-            Object.keys(gameState.choices[gameState.currentScenario]).forEach(choice => {
-                const button = document.createElement('button');
-                button.textContent = choice;
-                button.onclick = () => makeChoice(choice);
-                choicesElement.appendChild(button);
-            });
-        }
-
-        updateGame(); // Initial game update
     </script>
 
 </body>
