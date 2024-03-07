@@ -1,8 +1,7 @@
 import express from "express";
 import User from "../modules/user.mjs";
-import { HttpCodes } from "../modules/httpConstants.mjs";
-import bcrypt from "bcrypt"; 
-import SuperLogger from "../modules/SupperLogger.mjs";
+import { HTTPCodes } from "../modules/httpConstants.mjs";
+import SuperLogger from "../modules/SuperLogger.mjs";
 
 const USER_API = express.Router();
 USER_API.use(express.json());
@@ -15,14 +14,14 @@ USER_API.get("/:id", (req, res) => {
   const foundUser = User.find(u => u.id === userId);
 
   if (foundUser) {
-    res.status(HttpCodes.SuccesfullRespons.Ok).send(foundUser).end();
+    res.status(HTTPCodes.SuccesfullRespons.Ok).send(foundUser).end();
   } else {
-    res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
   }
 });
 
 USER_API.get("/", (req, res) => {
-  res.status(HttpCodes.SuccesfullRespons.Ok).send(User).end();
+  res.status(HTTPCodes.SuccesfullRespons.Ok).send(User).end();
 });
 
 USER_API.post("/register", async (req, res, next) => {
@@ -41,13 +40,13 @@ USER_API.post("/register", async (req, res, next) => {
       // Save the user to the database
       await newUser.save();
 
-      res.status(HttpCodes.SuccesfullRespons.Ok).send(newUser).end();
+      res.status(HTTPCodes.SuccesfullRespons.Ok).send(newUser).end();
     } else {
-      res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Missing data fields").end();
+      res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing data fields").end();
     }
   } catch (error) {
     console.error("Error registering user:", error);
-    res.status(HttpCodes.ServerErrorRespons.InternalError).send("Error registering user").end();
+    res.status(HTTPCodes.ServerErrorRespons.InternalError).send("Error registering user").end();
   }
 });
 
@@ -76,13 +75,13 @@ USER_API.put("/:id", async (req, res) => {
       // Save the updated user to the database
       await foundUser.save();
 
-      res.status(HttpCodes.SuccesfullRespons.Ok).send(foundUser).end();
+      res.status(HTTPCodes.SuccesfullRespons.Ok).send(foundUser).end();
     } else {
-      res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+      res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
     }
   } catch (error) {
     console.error("Error updating user:", error);
-    res.status(HttpCodes.ServerErrorRespons.InternalError).send("Error updating user").end();
+    res.status(HTTPCodes.ServerErrorRespons.InternalError).send("Error updating user").end();
   }
 });
 
@@ -97,9 +96,9 @@ USER_API.delete("/:id", (req, res) => {
 
   if (userIndex !== -1) {
     const deletedUser = User.splice(userIndex, 1)[0];
-    res.status(HttpCodes.SuccesfullRespons.Ok).send(deletedUser).end();
+    res.status(HTTPCodes.SuccesfullRespons.Ok).send(deletedUser).end();
   } else {
-    res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    res.status(HTTPCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
   }
 });
 
