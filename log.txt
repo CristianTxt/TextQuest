@@ -35,3 +35,7 @@
 17:36:52 [32mGET[39m /user/S2WUWTR
 17:37:05 [32mGET[39m /user/
 17:37:27 [32mGET[39m /
+####################
+Server enviorment local
+Database connection  postgres://postgres:TOLOSA01@localhost:5432/postgres
+####################
