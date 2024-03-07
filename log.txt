@@ -63,3 +63,7 @@ Database connection  postgres://postgres:TOLOSA01@localhost/postgres
 Server enviorment local
 Database connection  postgres://postgres:TOLOSA01@localhost/postgres
 ####################
+####################
+Server enviorment local
+Database connection  postgres://postgres:tolosa01@localhost/postgres
+####################
