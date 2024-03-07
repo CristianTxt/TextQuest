@@ -1,89 +1,115 @@
 import express from "express";
 import User from "../modules/user.mjs";
-import { HTTPCodes } from "../modules/httpConstants.mjs";
-import SuperLogger from "../modules/SuperLogger.mjs";
-
+import { HttpCodes } from "../modules/httpConstants.mjs";
+import bcrypt from "bcrypt"; 
+import SuperLogger from "../modules/SupperLogger.mjs";
 
 const USER_API = express.Router();
-USER_API.use(express.json()); // This makes it so that express parses all incoming payloads as JSON for this route.
+USER_API.use(express.json());
 
-const users = [];
+const logger = new SuperLogger();
 
-USER_API.get('/', (req, res, next) => {
-    res.status(HTTPCodes.SuccesfullRespons.Ok).send(User).end();
-    SuperLogger.log("Demo of logging tool");
-    SuperLogger.log("A important msg", SuperLogger.LOGGING_LEVELS.CRTICAL);
-})
+USER_API.get("/:id", (req, res) => {
+  const userId = req.params.id;
 
+  const foundUser = User.find(u => u.id === userId);
 
-// Define a route to handle GET requests for retrieving a specific user by ID
-USER_API.get('/:id', async (req, res, next) => {
-    const userId = req.params.id;
-
-    try {
-        const client = await pool.connect();
-        const result = await client.query('SELECT * FROM "Users" WHERE id = $1', [userId]);
-        client.release();
-
-        if (result.rows.length === 0) {
-            res.status(404).json({ message: 'User not found' });
-        } else {
-            const user = result.rows[0];
-            res.json(user);
-        }
-    } catch (error) {
-        console.error('Error fetching user:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+  if (foundUser) {
+    res.status(HttpCodes.SuccesfullRespons.Ok).send(foundUser).end();
+  } else {
+    res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+  }
 });
 
-    
+USER_API.get("/", (req, res) => {
+  res.status(HttpCodes.SuccesfullRespons.Ok).send(User).end();
+});
 
-USER_API.post('/register', async (req, res, next) => {
+USER_API.post("/register", async (req, res, next) => {
+  const { name, password } = req.body;
 
-    // This is using javascript object destructuring.
-    // Recomend reading up https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#syntax
-    // https://www.freecodecamp.org/news/javascript-object-destructuring-spread-operator-rest-parameter/
-    const { name, email, password } = req.body;
+  try {
+    if (name && password) {
+      // Hash the password before storing it
+      const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
 
+      const newUser = new User({
+        name: name,
+        pswHash: hashedPassword // Store hashed password
+      });
 
-    if (name != "" && email != "" && password != "") {
-        let user = new User();
-        user.name = name;
-        user.email = email;
+      // Save the user to the database
+      await newUser.save();
 
-        ///TODO: Do not save passwords.
-        user.pswHash = password;
-
-        ///TODO: Does the user exist?
-        let exists = false;
-
-        if (!exists) {
-            //TODO: What happens if this fails?
-            user = await user.save();
-            res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
-        } else {
-            res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
-        }
-
+      res.status(HttpCodes.SuccesfullRespons.Ok).send(newUser).end();
     } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
+      res.status(HttpCodes.ClientSideErrorRespons.BadRequest).send("Missing data fields").end();
     }
-
+  } catch (error) {
+    console.error("Error registering user:", error);
+    res.status(HttpCodes.ServerErrorRespons.InternalError).send("Error registering user").end();
+  }
 });
 
-USER_API.post('/:id', (req, res, next) => {
-    /// TODO: Edit user
-    const user = new User(); //TODO: The user info comes as part of the request 
-    user.save();
+
+
+
+
+USER_API.put("/:id", async (req, res) => {
+  const userId = req.params.id;
+  const { name, password } = req.body;
+
+  try {
+    // Find the user by ID
+    const foundUser = User.find(u => u.id === userId);
+
+    if (foundUser) {
+      // Update user fields
+      if (name) foundUser.name = name;
+
+      if (password) {
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds = 10
+        foundUser.pswHash = hashedPassword;
+      }
+
+      // Save the updated user to the database
+      await foundUser.save();
+
+      res.status(HttpCodes.SuccesfullRespons.Ok).send(foundUser).end();
+    } else {
+      res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+    }
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(HttpCodes.ServerErrorRespons.InternalError).send("Error updating user").end();
+  }
 });
 
-USER_API.delete('/:id', (req, res) => {
-    /// TODO: Delete user.
-    const user = new User(); //TODO: Actual user
-    user.delete();
+
+
+
+
+USER_API.delete("/:id", (req, res) => {
+  const userId = req.params.id;
+
+  const userIndex = User.findIndex(u => u.id === userId);
+
+  if (userIndex !== -1) {
+    const deletedUser = User.splice(userIndex, 1)[0];
+    res.status(HttpCodes.SuccesfullRespons.Ok).send(deletedUser).end();
+  } else {
+    res.status(HttpCodes.ClientSideErrorRespons.NotFound).send("User not found").end();
+  }
 });
 
-export default USER_API
 
-export { USER_API};
+
+
+const autoLoggerMiddleware = logger.createAutoHTTPRequestLogger();
+USER_API.use(autoLoggerMiddleware);
+
+const limitedLoggerMiddleware = logger.createLimitedHTTPRequestLogger({ threshold: SuperLogger.LOGGING_LEVELS.IMPORTANT });
+USER_API.use(limitedLoggerMiddleware);
+
+export default USER_API;
