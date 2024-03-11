@@ -68,9 +68,7 @@
             const createUserForm = document.getElementById('create-user-form');
             const choicesTextElement = document.getElementById('choices-text');
 
-            // Backend API URL with port 5432
-            const apiUrl = 'http://localhost:5432/user'; // Update the API URL as needed
-
+            
             // Function to create a user
             const createUser = (name, password) => {
                 fetch(apiUrl, {
