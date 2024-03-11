@@ -12,9 +12,9 @@ class User {
     }
 async save() {
     if (this.id == null){ 
-        return await DBManger.createUser(this);
+        return await DBManager.createUser(this);
     } else { 
-        return await DBManger.updateUser(this);
+        return await DBManager.updateUser(this);
     }
   }
 
