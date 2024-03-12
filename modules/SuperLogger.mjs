@@ -128,4 +128,3 @@ class SuperLogger {
 
 
 export default SuperLogger
-    

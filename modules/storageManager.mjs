@@ -23,7 +23,7 @@ class DBManager {
 
         try {
             await client.connect();
-            const output = await client.query('Update "public"."Users" set "name" = $1, "password" = $3 where id = $4;', [user.name, user.pswHash, user.id]);
+            const output = await client.query('Update "public"."Users" set "name" = $1, "email" = $2, "password" = $3 where id = $4;', [user.name, user.email, user.pswHash, user.id]);
 
             // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
             // Of special intrest is the rows and rowCount properties of this object.
@@ -68,7 +68,7 @@ class DBManager {
 
         try {
             await client.connect();
-            const output = await client.query('INSERT INTO "public"."Users"("name", "password") VALUES($1::Text, $2::Text) RETURNING id;', [user.name, user.pswHash]);
+            const output = await client.query('INSERT INTO "public"."Users"("name", "email", "password") VALUES($1::Text, $2::Text, $3::Text) RETURNING id;', [user.name, user.email, user.pswHash]);
 
             // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
             // Of special intrest is the rows and rowCount properties of this object.
