@@ -135,3 +135,74 @@ Database connection  postgres://postgres:TOLOSA01@localhost:5432/postgres
 Server enviorment local
 Database connection  postgres://postgres:TOLOSA01@localhost:5432/postgres
 ####################
+####################
+Server enviorment local
+Database connection  postgres://postgres:TOLOSA01@localhost:5432/postgres
+####################
+12:19:32 [32mGET[39m /
+12:19:35 [33mPOST[39m /user/register
+####################
+Server enviorment local
+Database connection  postgres://postgres:TOLOSA01@localhost:3000/postgres
+####################
+12:20:02 [33mPOST[39m /user/register
+12:20:26 [90mOPTIONS[39m /user
+####################
+Server enviorment local
+Database connection  postgres://postgres:TOLOSA01@localhost:3000/postgres
+####################
+12:20:46 [33mPOST[39m /user/register
+12:20:49 [32mGET[39m /
+####################
+Server enviorment local
+Database connection  
+####################
+####################
+Server enviorment local
+Database connection  
+####################
+12:45:20 [32mGET[39m /
+12:49:30 [33mPOST[39m /user/register
+####################
+Server enviorment local
+Database connection  
+####################
+12:50:18 [33mPOST[39m /user/register
+12:50:33 [32mGET[39m /user
+Demo of logging tool
+A important msg
+####################
+Server enviorment local
+Database connection  
+####################
+12:51:40 [33mPOST[39m /user/register
+12:51:47 [32mGET[39m /user
+Server enviorment local
+####################
+Database connection  
+####################
+12:52:14 [32mGET[39m /user
+12:52:26 [33mPOST[39m /user/register
+12:52:37 [33mPOST[39m /user/register
+12:56:33 [90mOPTIONS[39m /user
+12:56:35 [90mOPTIONS[39m /user
+12:56:35 [90mOPTIONS[39m /user
+12:56:35 [90mOPTIONS[39m /user
+12:56:35 [90mOPTIONS[39m /user
+12:56:35 [90mOPTIONS[39m /user
+12:56:36 [90mOPTIONS[39m /user
+12:56:36 [90mOPTIONS[39m /user
+12:56:36 [90mOPTIONS[39m /user
+12:56:36 [90mOPTIONS[39m /user
+12:56:36 [90mOPTIONS[39m /user
+12:56:36 [90mOPTIONS[39m /user
+12:56:36 [90mOPTIONS[39m /user
+12:56:36 [90mOPTIONS[39m /user
+12:56:36 [90mOPTIONS[39m /user
+12:56:38 [32mGET[39m /
+####################
+Server enviorment local
+Database connection  
+####################
+12:58:47 [32mGET[39m /
+12:59:11 [33mPOST[39m /user/register
