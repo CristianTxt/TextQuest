@@ -39,7 +39,8 @@ class DBManager {
         return user;
 
     }
-
+   
+    
     async deleteUser(user) {
 
         const client = new pg.Client(this.#credentials);

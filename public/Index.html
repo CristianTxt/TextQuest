@@ -1,51 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My app</title>
+    <title>User List & Text Adventure Game</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #game-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        #output {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        #choices {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        /* Style for the dropdown menu */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+    </style>
+    
 </head>
-
-
 <body>
 
-    <div>
-        Name : <input type="text" id="name"><br>
-        Email: <input type="email" id="email"><br />
-        Password: <input type="password" id="pswHash"><br />
-        <button id="createUserButton">Create User</button>
+    <h1> Text Adventure Game</h1>
+
+    <!-- User List Section -->
+    <h2>User List</h2>
+    <ul id="user-list"></ul>
+
+    <!-- Register User Section -->
+    <h2>Register User</h2>
+    <form id="register-user-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+    
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required> <!-- Use type="email" for email input -->
+    
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+    
+        <button type="submit">Register User</button>
+    </form>
+    
+    <!-- Dropdown menu for login and settings -->
+    <div class="dropdown">
+        <button class="dropbtn">Menu</button>
+        <div class="dropdown-content">
+            <a href="#">Login</a>
+            <a href="#">Settings</a>
+        </div>
     </div>
 
-    <script>
+    <!-- Text Adventure Game Section -->
+    <div id="game-container" style="display: none;"> <!-- Initially hidden -->
+        <div id="output">Welcome to the Text Adventure Game! Make your choices.</div>
+        <div id="choices"></div>
+        <textarea id="choices-text" rows="10" cols="80" readonly></textarea>
+    </div>
 
-        const createUserButton = document.getElementById("createUserButton");
+    <!-- JavaScript Code -->
+    <script> 
+        document.addEventListener('DOMContentLoaded', () => {
+            const userListElement = document.getElementById('user-list');
+            const registerUserForm = document.getElementById('register-user-form');
+            const choicesTextElement = document.getElementById('choices-text');
 
-        createUserButton.onclick = async function (e) {
 
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const pswHash = document.getElementById("pswHash").value;
-            const user = { name, email, pswHash };
-            const respon = await postTo("/user", user);
-
-        }
-
-        async function postTo(url, data) {
-            const header = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
+            // Function to register a user
+            const registerUser = (name, email, password) => {
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email, password }),
+                })
+                .then(response => response.json())
+                .then(user => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${user.name}`;
+                    userListElement.appendChild(listItem);
+                })
+                .catch(error => console.error('Error registering user:', error));
             };
 
-            const respon = await fetch(url, header);
-            return respon;
-        }
+            // Event listener for form submission
+            registerUserForm.addEventListener('submit', (event) => {
+                event.preventDefault();
 
-    </script>
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                registerUser(name, email, password);
 
+registerUserForm.reset();
+});
+
+// Fetch users from the backend
+fetch(apiUrl)
+.then(response => response.json())
+.then(users => {
+    users.forEach(user => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${user.name}`;
+        userListElement.appendChild(listItem);
+    });
+})
+.catch(error => console.error('Error fetching data:', error));
+});
+
+// Text Adventure Game Logic
+let gameState = {
+currentScenario: 'intro',
+choices: {
+intro: {
+    LookAround: 'lookAround',
+    OpenDoor: 'openDoor'
+},
+// Define other scenarios and choices here...
+},
+scenarioText: {
+intro: 'You wake up in a mysterious room. Its dark but you can barely see that there is a door in front of you. What do you do?',
+// Define scenario texts here...
+},
+playerChoices: []
+};
+
+function makeChoice(choice) {
+const nextScenario = gameState.choices[gameState.currentScenario][choice];
+if (nextScenario) {
+gameState.playerChoices.push({
+    scenarioText: gameState.scenarioText[gameState.currentScenario],
+    choice: choice
+});
+gameState.currentScenario = nextScenario;
+updateGame();
+}
+}
+
+function updateGame() {
+const outputElement = document.getElementById('output');
+const choicesElement = document.getElementById('choices');
+const choicesTextElement = document.getElementById('choices-text');
+
+outputElement.textContent = gameState.scenarioText[gameState.currentScenario];
+
+// Update choices text box
+choicesTextElement.value = '';
+gameState.playerChoices.forEach((choice, index) => {
+choicesTextElement.value += `${index + 1}. Scenario: ${choice.scenarioText}, Choice: ${choice.choice}\n`;
+});
+
+choicesElement.innerHTML = '';
+Object.keys(gameState.choices[gameState.currentScenario]).forEach(choice => {
+const button = document.createElement('button');
+button.textContent = choice;
+button.onclick = () => makeChoice(choice);
+choicesElement.appendChild(button);
+});
+}
+
+updateGame(); // Initial game update
+</script>
 </body>
-
 </html>

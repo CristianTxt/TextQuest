@@ -5,10 +5,11 @@ import SuperLogger from "../modules/SuperLogger.mjs";
 
 
 
+
+
 const USER_API = express.Router();
 USER_API.use(express.json()); 
 
-const users = [];
 
 USER_API.get('/', (req, res, next) => {
 
@@ -20,14 +21,13 @@ USER_API.get('/', (req, res, next) => {
 })
 
 
-USER_API.get('/:id', (req, res, next) => {
+// Define the GET endpoint to fetch a specific user by ID and allow editing
+USER_API.get('/users/:id', async (req, res, next) => {
+   
 
-    // Tip: All the information you need to get the id part of the request can be found in the documentation 
-    // https://expressjs.com/en/guide/routing.html (Route parameters)
+   
+});
 
-    /// TODO: 
-    // Return user object
-})
 
 USER_API.post('/register', async (req, res, next) => {
 
@@ -62,10 +62,9 @@ USER_API.post('/register', async (req, res, next) => {
 
 });
 
-USER_API.post('/:id', (req, res, next) => {
-    /// TODO: Edit user
-    const user = new User(); //TODO: The user info comes as part of the request 
-    user.save();
+// POST endpoint to update user details
+USER_API.post('/:id', async (req, res) => {
+  
 });
 
 USER_API.delete('/:id', (req, res) => {
