@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,8 +12,9 @@
             display: none;
         }
     </style>
-    
+
 </head>
+
 <body>
 
     <h1> Text Adventure Game</h1>
@@ -35,7 +37,7 @@
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
         <button type="submit">Register User</button>
-    </form> 
+    </form>
 
     <!-- Login Section -->
     <form id="login-user-form" class="form hidden">
@@ -52,76 +54,193 @@
         <div id="output">Welcome to the Text Adventure Game! Make your choices.</div>
         <div id="choices"></div>
         <textarea id="choices-text" rows="10" cols="80" readonly></textarea>
+        <button id="save-button">Save</button> <!-- Add Save Button -->
+        <button id="load-button">Load Saved Game</button> <!-- Add Load Button -->
         <button id="sign-out-button">Sign Out</button>
     </div>
-    
-        <!-- Your game elements -->
+
+    <!-- Your game elements -->
 
     <!-- JavaScript Code -->
-    <script>  
+    <script>
+        const apiUrl = 'http://localhost:5000';
 
-document.addEventListener('DOMContentLoaded', () => {
-    const apiUrl = 'http://localhost:5000'; // Assuming your API
-    const registerUserForm = document.getElementById('register-user-form');
-    const loginUserForm = document.getElementById('login-user-form');
-    const gameContainer = document.getElementById('game-container');
-    const formSelection = document.getElementById('form-selection');
-
-    formSelection.addEventListener('change', () => {
-        if (formSelection.value === 'register') {
-            registerUserForm.classList.remove('hidden');
-            loginUserForm.classList.add('hidden');
-        } else if (formSelection.value === 'login') {
-            registerUserForm.classList.add('hidden');
-            loginUserForm.classList.remove('hidden');
-        }
-    });
-
-    registerUserForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const response = await fetch(`${apiUrl}/user/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+        let gameState = {
+            currentScenario: 'intro',
+            choices: {
+                intro: {
+                    LookAround: 'lookAround',
+                    OpenDoor: 'openDoor'
+                },
+                lookAround: {
+                    InvestigateRoom: 'investigateRoom',
+                    OpenDoor: 'openDoor'
+                },
+                investigateRoom: {
+                    Desk: 'desk',
+                    Window: 'window'
+                },
+                desk: {
+                    LeaveRoom: 'leaveRoom'
+                },
+                window: {
+                    JumpOut: 'jumpOut'
+                },
+                openDoor: {
+                    Hallway: 'hallway'
+                },
+                hallway: {
+                    Left: 'left',
+                    Right: 'right'
+                },
+                // Add more choices and scenarios here...
             },
-            body: JSON.stringify({ name, email, password }),
-        });
-        const data = await response.json();
-        console.log(data);
-        registerUserForm.reset();
-    }); 
-
-    loginUserForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        const response = await fetch(`${apiUrl}/user/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
+            scenarioText: {
+                intro: 'You wake up in a mysterious room. It\'s dark but you can barely see that there is a door in front of you. What do you do?',
+                lookAround: 'You look around the room. There seems to be some interesting objects scattered around. What do you do next?',
+                investigateRoom: 'You decide to investigate further. Do you want to check the desk or look out the window?',
+                desk: 'You find some papers on the desk. What do you do?',
+                window: 'You approach the window. It seems to be stuck. Do you try to open it?',
+                openDoor: 'You open the door and find yourself in a dimly lit hallway. Which way do you go?',
+                hallway: 'You enter a dimly lit hallway. Which way do you go?',
+                // Add more scenario texts here...
             },
-            body: JSON.stringify({ email, password }),
-        });
-        const data = await response.json();
-        loginUserForm.reset();
-        if (response.ok) {
-            localStorage.setItem('token', data.authToken);
-            console.log(data.authToken)
-            gameContainer.classList.remove('hidden');
-        } else {
-            alert('Login failed. Please check your credentials.');
-        }
-    });
+            playerChoices: []
+        }; 
+           
+        currentGameState = {currentScenario: ""}
 
-    const signOutButton = document.getElementById('sign-out-button');
-    signOutButton.addEventListener('click', () => {
-        localStorage.removeItem('token');
-        gameContainer.classList.add('hidden');
-    });
-});
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const registerUserForm = document.getElementById('register-user-form');
+            const loginUserForm = document.getElementById('login-user-form');
+            const gameContainer = document.getElementById('game-container');
+            const formSelection = document.getElementById('form-selection');
+
+            formSelection.addEventListener('change', () => {
+                if (formSelection.value === 'register') {
+                    registerUserForm.classList.remove('hidden');
+                    loginUserForm.classList.add('hidden');
+                } else if (formSelection.value === 'login') {
+                    registerUserForm.classList.add('hidden');
+                    loginUserForm.classList.remove('hidden');
+                }
+            });
+
+            registerUserForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const response = await fetch(`${apiUrl}/user/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email, password }),
+                });
+                const data = await response.json();
+                console.log(data);
+                registerUserForm.reset();
+            });
+
+            loginUserForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                const response = await fetch(`${apiUrl}/user/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+                const data = await response.json();
+                loginUserForm.reset();
+                if (response.ok) {
+                    localStorage.setItem('token', data.authToken);
+                    localStorage.setItem("userId", data.existingUser.id)
+                    gameContainer.classList.remove('hidden');
+                } else {
+                    alert('Login failed. Please check your credentials.');
+                }
+            });
+
+            const signOutButton = document.getElementById('sign-out-button');
+            signOutButton.addEventListener('click', () => {
+                localStorage.removeItem('token');
+                gameContainer.classList.add('hidden');
+            });
+
+            function makeChoice(choice) {
+                const nextScenario = gameState.choices[gameState.currentScenario][choice];
+                if (nextScenario) {
+                    gameState.playerChoices.push({
+                        scenarioText: gameState.scenarioText[gameState.currentScenario],
+                        choice: choice
+                    });
+                    gameState.currentScenario = nextScenario;
+                    updateGame();
+                }
+            }
+
+            function updateGame() {
+                const outputElement = document.getElementById('output');
+                const choicesElement = document.getElementById('choices');
+                const choicesTextElement = document.getElementById('choices-text');
+                const userInput = document.getElementById('choices-text').value;
+
+                outputElement.textContent = gameState.scenarioText[gameState.currentScenario];
+
+                currentGameState.currentScenario = userInput;
+
+                choicesTextElement.value = '';
+                gameState.playerChoices.forEach((choice, index) => {
+                    choicesTextElement.value += `${index + 1}. Scenario: ${choice.scenarioText}, Choice: ${choice.choice}\n`;
+                });
+
+                choicesElement.innerHTML = '';
+                Object.keys(gameState.choices[gameState.currentScenario]).forEach(choice => {
+                    const button = document.createElement('button');
+                    button.textContent = choice;
+                    button.onclick = () => makeChoice(choice);
+                    choicesElement.appendChild(button);
+                });
+            }
+
+            updateGame(); // Initial game update
+
+            async function saveGameState(currentGameState) {
+                const userId = localStorage.getItem("userId");
+                const token = localStorage.getItem('token');
+
+                const response = await fetch(`${apiUrl}/user/save-game-state/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ userId, currentGameState })
+                });
+
+                if (response.ok) {
+                    return 'Game state saved successfully';
+                } else {
+                    throw new Error('Failed to save game state');
+                }
+            }
+
+            const saveButton = document.getElementById('save-button');
+            saveButton.addEventListener('click', () => {
+                saveGameState(currentGameState);
+            });
+
+           
+
+        });
+
     </script>
 </body>
+
 </html>

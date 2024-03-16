@@ -117,6 +117,33 @@ class DBManager {
             client.end(); // Disconnect from the database
         }
     }
+    async saveGameState(userId, currentGameState) {
+        const client = new pg.Client(this.#credentials);
+
+        try {
+            await client.connect();
+            // Check if the game state already exists for this user
+            const existingGameState = await client.query('SELECT * FROM "public"."UserGameStates" WHERE "user_id" = $1;', [userId]);
+            if (existingGameState.rows.length === 0) {
+                // If game state doesn't exist, insert a new record
+                await client.query('INSERT INTO "public"."UserGameStates"("user_id", "game_state") VALUES($1, $2);', [userId, JSON.stringify(currentGameState)]);
+            } else {
+                // If game state exists, update the existing record
+                await client.query('UPDATE "public"."UserGameStates" SET "game_state" = $1 WHERE "user_id" = $2;', [JSON.stringify(currentGameState), userId]);
+            }
+        } catch (error) {
+            console.error("Error saving game state:", error);
+            throw error; // Propagate the error
+        } finally {
+            client.end(); // Disconnect from the database
+        }
+    }
+
+   
+    
+
+
+    
 
 }
 

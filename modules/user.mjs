@@ -1,34 +1,38 @@
-
 import DBManager from "./storageManager.mjs";
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 
-
-
 class User {
 
   constructor() {
-  
     this.email;
     this.pswHash;
     this.name;
     this.id;
+    this.gameState; // Add a property to store game state
   }
 
-
-  
-
   async save() {
+    try {
+      let savedUser = null;
+      if (this.id == null) {
+        savedUser = await DBManager.createUser(this);
+      } else {
+        savedUser = await DBManager.updateUser(this);
+      }
 
-  
-    if (this.id == null) {
-      return await DBManager.createUser(this);
-    } else {
-      return await DBManager.updateUser(this);
+      // Save game state if present
+      if (this.gameState && this.id) {
+        await DBManager.saveGameState(this.id, this.gameState);
+      }
+
+      return savedUser;
+    } catch (error) {
+      console.error("Error saving user:", error);
+      throw error; // Propagate the error
     }
   }
 
-  
   static async findByEmail(email) {
     try {
       const user = await DBManager.getUserByEmail(email);
@@ -44,7 +48,7 @@ class User {
       throw error; // Propagate the error
     }
   }
-  
+
   async authenticate(password) {
     try {
       // Compare the provided password with the stored hashed password
@@ -66,12 +70,23 @@ class User {
     }
   }
 
-
   delete() {
-
-    /// TODO: What happens if the DBManager fails to complete its task?
+    // TODO: What happens if the DBManager fails to complete its task?
     DBManager.deleteUser(this);
   }
+
+  async saveUserGameState(userId, currentGameState) {
+    try {
+      const result = await DBManager.saveGameState(userId, currentGameState);
+      return result; // Return the result from saveGameState function
+    } catch (error) {
+      console.error("Error saving user game state:", error);
+      throw new Error("Error saving user game state");
+    }
+  }
+  
+  
 }
+
 
 export default User;

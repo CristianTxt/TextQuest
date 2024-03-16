@@ -78,12 +78,11 @@ USER_API.post('/login', async (req, res, next) => {
         if (existingUser) {
             // Validate password
             const isValidPassword = await existingUser.authenticate(password);
-            console.log(isValidPassword)
             if (isValidPassword) {
                 // Password is correct, generate auth token
                 const authToken = await existingUser.generateAuthToken();
                 // Return the auth token
-                res.status(HTTPCodes.SuccesfullRespons.Ok).json({ authToken }).end();
+                res.status(HTTPCodes.SuccesfullRespons.Ok).json({ authToken, existingUser }).end();
                 return;
             }
         }
@@ -92,6 +91,22 @@ USER_API.post('/login', async (req, res, next) => {
     // Invalid credentials
     res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).end();
 });
+
+USER_API.post('/save-game-state', async (req, res) => {
+    const user = new User();
+    const userId = req.body.userId;
+    const gameState = req.body.currentGameState;
+
+    try {
+        // Update or create the user's game state in the database
+        await user.saveUserGameState(userId, gameState);
+        res.status(HTTPCodes.SuccesfullRespons.Ok).send("Game state saved successfully").end();
+    } catch (error) {
+        console.error("Error saving game state:", error);
+        res.status(HTTPCodes.ServerErrorRespons.InternalError).send("Internal Server Error").end();
+    }
+});
+
 
 
 // POST endpoint to update user details
