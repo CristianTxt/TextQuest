@@ -2,6 +2,8 @@ import express from "express";
 import User from "../modules/user.mjs";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
 import SuperLogger from "../modules/SuperLogger.mjs";
+import bcrypt from 'bcrypt';
+
 
 
 
@@ -30,37 +32,67 @@ USER_API.get('/users/:id', async (req, res, next) => {
 
 
 USER_API.post('/register', async (req, res, next) => {
-
-    // This is using javascript object destructuring.
-    // Recomend reading up https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#syntax
-    // https://www.freecodecamp.org/news/javascript-object-destructuring-spread-operator-rest-parameter/
     const { name, email, password } = req.body;
 
+    if (name && email && password) {
+        try {
+            // Hash the password
+            const hashedPassword = await bcrypt.hash(password, 10);
 
-    if (name != "" && email != "" && password != "") {
-        let user = new User();
-        user.name = name;
-        user.email = email;
+            // Create a new user object
+            let user = new User();
+            user.name = name;
+            user.email = email;
+            user.pswHash = hashedPassword; // Store the hashed password
 
-        ///TODO: Do not save passwords.
-        user.pswHash = password;
+            // Check if the user already exists
+            const existingUser = await User.findByEmail(email);
+            if (existingUser) {
+                // User already exists, return a 400 Bad Request response
+                res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
+                return;
+            }
 
-        ///TODO: Does the user exist?
-        let exists = false;
-
-        if (!exists) {
-            //TODO: What happens if this fails?
+            // Save the user to the database
             user = await user.save();
             res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
-        } else {
-            res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
+        } catch (error) {
+            console.error("Error occurred during user registration:", error);
+            res.status(HTTPCodes.ServerErrorRespons.InternalError).send("Internal Server Error").end();
         }
-
     } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
+        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing required fields").end();
+    }
+});
+
+USER_API.post('/login', async (req, res, next) => {
+    const { email, password } = req.body;
+
+    if (email && password) {
+
+        // Check if user exists
+        const user = new User();
+        // Assuming your User class has a method to fetch user by email
+        const existingUser = await User.findByEmail(email);
+
+        if (existingUser) {
+            // Validate password
+            const isValidPassword = await existingUser.authenticate(password);
+            console.log(isValidPassword)
+            if (isValidPassword) {
+                // Password is correct, generate auth token
+                const authToken = await existingUser.generateAuthToken();
+                // Return the auth token
+                res.status(HTTPCodes.SuccesfullRespons.Ok).json({ authToken }).end();
+                return;
+            }
+        }
     }
 
+    // Invalid credentials
+    res.status(HTTPCodes.ClientSideErrorRespons.Unauthorized).end();
 });
+
 
 // POST endpoint to update user details
 USER_API.post('/:id', async (req, res) => {

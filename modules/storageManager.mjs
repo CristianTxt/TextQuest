@@ -3,6 +3,7 @@ import SuperLogger from "./SuperLogger.mjs";
 
 
 
+
 /// TODO: is the structure / design of the DBManager as good as it could be?
 
 class DBManager {
@@ -71,8 +72,7 @@ class DBManager {
             await client.connect();
             const output = await client.query('INSERT INTO "public"."Users"("name", "email", "password") VALUES($1::Text, $2::Text, $3::Text) RETURNING id;', [user.name, user.email, user.pswHash]);
 
-            // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
-            // Of special intrest is the rows and rowCount properties of this object.
+
 
             if (output.rows.length == 1) {
                 // We stored the user in the DB.
@@ -87,7 +87,35 @@ class DBManager {
         }
 
         return user;
+ 
+    }  
 
+
+
+    async getUserByEmail(email) {
+        const client = new pg.Client(this.#credentials);
+
+        try {
+            await client.connect();
+            const result = await client.query('SELECT * FROM "public"."Users" WHERE "email" = $1;', [email]);
+            if (result.rows.length === 1) {
+                const user = result.rows[0];
+                // Map database fields to User object
+                return {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    pswHash: user.password
+                };
+            } else {
+                return null; // User not found
+            }
+        } catch (error) {
+            console.error("Error retrieving user by email:", error);
+            throw error; // Propagate the error
+        } finally {
+            client.end(); // Disconnect from the database
+        }
     }
 
 }
