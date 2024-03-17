@@ -194,7 +194,16 @@
 
         <!-- JavaScript Code -->
         <script>
-        const apiUrl = 'http://localhost:5000' || 'https://textquest-hiyn.onrender.com';
+let apiUrl;
+
+if (process.env.NODE_ENV === 'production') {
+    // Use render link in production
+    apiUrl = 'https://textquest-hiyn.onrender.com';
+} else {
+    // Use localhost in development
+    apiUrl = 'http://localhost:5000';
+}
+
 
             let gameState = {
                 currentScenario: 'intro',
