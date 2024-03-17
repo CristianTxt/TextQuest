@@ -197,12 +197,13 @@
 let apiUrl;
 
 if (process.env.ENVIRONMENT === 'prod') {
-    // Use render link in production
-    apiUrl = 'https://textquest-hiyn.onrender.com';
+    // Use production URL
+    apiUrl = process.env.DB_CONNECTIONSTRING_PROD;
 } else {
-    // Use localhost in development
-    apiUrl = 'http://localhost:5000';
+    // Default to local URL
+    apiUrl = process.env.DB_CONNECTIONSTRING_LOCAL;
 }
+
 
 
             let gameState = {
