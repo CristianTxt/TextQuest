@@ -1,4 +1,6 @@
+
 const apiUrl = "https://textquest-hiyn.onrender.com";
+
 
 let gameState = {
     currentScenario: 'intro',
@@ -16,7 +18,12 @@ let gameState = {
             Window: 'window'
         },
         desk: {
-            LeaveRoom: 'leaveRoom'
+            LeaveRoom: 'leaveRoom',
+            ReadPapers: 'readPapers'
+        },
+        readPapers: {
+            FollowMap: 'followMap',
+            ContinueExploring: 'continueExploring'
         },
         window: {
             JumpOut: 'jumpOut'
@@ -43,12 +50,24 @@ let gameState = {
         towerTop: {
             CrossBridge: 'crossBridge'
         },
+        crossBridge: {
+            LookDown: 'lookDown',
+            KeepWalking: 'keepWalking'
+        },
+        tunnel: {
+            Explore: 'explore',
+            Retreat: 'retreat'
+        },
+        followMap: {
+            Proceed: 'proceed'
+        }
     },
     scenarioText: {
         intro: 'You wake up in a mysterious room. It\'s dark but you can barely see that there is a door in front of you. What do you do?',
         lookAround: 'You look around the room. There seems to be some interesting objects scattered around. What do you do next?',
         investigateRoom: 'You decide to investigate further. Do you want to check the desk or look out the window?',
         desk: 'You find some papers on the desk. What do you do?',
+        readPapers: 'You examine the papers on the desk. They are a map! Do you follow the map or continue exploring the room?',
         window: 'You approach the window. It seems to be stuck. Do you try to open it?',
         openDoor: 'You open the door and find yourself in a dimly lit hallway. Which way do you go?',
         hallway: 'You enter a dimly lit hallway. Which way do you go?',
@@ -57,8 +76,13 @@ let gameState = {
         stairs: 'You climb the stairs and emerge at the top of a tower. What do you see?',
         trapDoor: 'You open the trap door and descend into a dark tunnel. What awaits you in the depths?',
         towerTop: 'You reach the top of the tower and find a narrow bridge stretching across an abyss. Will you dare to cross it?',
+        crossBridge: 'You cautiously step onto the narrow bridge. Do you dare to look down or keep walking?',
+        tunnel: 'You descend into the dark tunnel. Do you explore further or retreat?',
+        followMap: 'You decide to follow the map. Where does it lead?',
+        proceed: 'You follow the map and proceed further.'
     },
     playerChoices: []
+
 };
 
 let currentGameState = { currentScenario: "" };
