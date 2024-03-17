@@ -194,17 +194,8 @@
 
         <!-- JavaScript Code -->
         <script>
-let apiUrl;
+let apiUrl; "https://textquest-hiyn.onrender.com/";
 
-if (process.env.ENVIRONMENT === 'prod') {
-    apiUrl = process.env.DB_CONNECTIONSTRING_PROD;
-} else if (process.env.ENVIRONMENT === 'local') {
-    apiUrl = process.env.DB_CONNECTIONSTRING_LOCAL;
-} else {
-    // Default to production if no environment specified
-    apiUrl = process.env.DB_CONNECTIONSTRING_PROD;
-}
- process.env.DB_CONNECTIONSTRING_LOCAL;
 
 
 
