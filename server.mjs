@@ -10,7 +10,7 @@ printDeveloperStartupInportantInformationMSG();
 // Creating an instance of the server
 const server = express();
 // Selecting a port for the server to use.
-const port = (process.env.PORT || 5000);
+const port = (process.env.PORT || 1000);
 server.set('port', port);
 
 
