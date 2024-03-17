@@ -48,7 +48,7 @@ const apiUrl = "https://textquest-hiyn.onrender.com";
                     towerTop: {
                         CrossBridge: 'crossBridge'
                     },
-                    // Add more choices and scenarios here...
+                   
                 },
                 scenarioText: {
                     intro: 'You wake up in a mysterious room. It\'s dark but you can barely see that there is a door in front of you. What do you do?',
@@ -63,7 +63,7 @@ const apiUrl = "https://textquest-hiyn.onrender.com";
                     stairs: 'You climb the stairs and emerge at the top of a tower. What do you see?',
                     trapDoor: 'You open the trap door and descend into a dark tunnel. What awaits you in the depths?',
                     towerTop: 'You reach the top of the tower and find a narrow bridge stretching across an abyss. Will you dare to cross it?',
-                    // Add more scenario texts here...
+                    
                 },
                 playerChoices: []
             };
@@ -126,9 +126,9 @@ const apiUrl = "https://textquest-hiyn.onrender.com";
                         localStorage.setItem('token', data.authToken);
                         localStorage.setItem("userId", data.existingUser.id);
                         const usernameDisplay = document.getElementById('username-display');
-                        usernameDisplay.textContent = `Welcome, ${data.existingUser.name}!`; // Display the username
+                        usernameDisplay.textContent = `Welcome, ${data.existingUser.name}!`; 
                         gameContainer.classList.remove('hidden');
-                        loginUserForm.classList.add('hidden'); // Hide the login form
+                        loginUserForm.classList.add('hidden'); 
                     } else {
                         alert('Login failed. Please check your credentials.');
                     }
@@ -177,7 +177,7 @@ const apiUrl = "https://textquest-hiyn.onrender.com";
                     });
                 }
 
-                updateGame(); // Initial game update
+                updateGame(); 
 
 
                 async function loadGameState() {
@@ -193,7 +193,7 @@ const apiUrl = "https://textquest-hiyn.onrender.com";
                     });
 
                     if (response.ok) {
-                        const gameState = await response.json(); // Parse JSON response
+                        const gameState = await response.json(); 
                         console.log(gameState);
                         return gameState;
                     } else {
@@ -209,7 +209,7 @@ const apiUrl = "https://textquest-hiyn.onrender.com";
 
                     } catch (error) {
                         console.error('Error loading game state:', error);
-                        // Handle the error as needed
+                       
                     }
                 });
 
