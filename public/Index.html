@@ -118,6 +118,30 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
+        .menu-bar {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.menu-bar button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.menu-bar button:hover {
+    background-color: #0056b3;
+}
+
+.menu-bar button:focus {
+    outline: none;
+}
+
     </style>
 
 </head>
@@ -126,13 +150,13 @@
 
     <div class="container">
         <h1>Text Adventure Game</h1>
-
-        <!-- Dropdown Menu to Switch between Registration and Login -->
-        <label for="form-selection">Select Form:</label>
-        <select id="form-selection">
-            <option value="register">Register</option>
-            <option value="login">Login</option>
-        </select>
+       
+       
+        <div id="form-selection" class="menu-bar">
+            <button id="login-btn">Login</button>
+            <button id="register-btn">Register</button>
+        </div>
+    
 
         <!-- Register User Section -->
         <form id="register-user-form" class="form hidden">
@@ -245,16 +269,20 @@
             const loginUserForm = document.getElementById('login-user-form');
             const gameContainer = document.getElementById('game-container');
             const formSelection = document.getElementById('form-selection');
+            const loginButton = document.getElementById('login-btn');
+    const registerButton = document.getElementById('register-btn');
 
-            formSelection.addEventListener('change', () => {
-                if (formSelection.value === 'register') {
-                    registerUserForm.classList.remove('hidden');
-                    loginUserForm.classList.add('hidden');
-                } else if (formSelection.value === 'login') {
-                    registerUserForm.classList.add('hidden');
-                    loginUserForm.classList.remove('hidden');
-                }
-            });
+    loginButton.addEventListener('click', () => {
+        registerUserForm.classList.add('hidden');
+        loginUserForm.classList.remove('hidden');
+        gameContainer.classList.add('hidden');
+    });
+
+    registerButton.addEventListener('click', () => {
+        registerUserForm.classList.remove('hidden');
+        loginUserForm.classList.add('hidden');
+        gameContainer.classList.add('hidden');
+    });
 
             registerUserForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
@@ -301,6 +329,8 @@
             signOutButton.addEventListener('click', () => {
                 localStorage.removeItem('token');
                 gameContainer.classList.add('hidden');
+    localStorage.removeItem('userId');
+    location.reload();
             });
 
             function makeChoice(choice) {
@@ -409,4 +439,4 @@
     </script>
 </body>
 
-</html>
+</html> 

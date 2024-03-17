@@ -1823,3 +1823,110 @@ Database connection  postgres://postgres:TOLOSA01@localhost/postgres
 0:08:36 [33mPOST[39m /user/login
 0:08:37 [33mPOST[39m /user/login
 0:08:52 [32mGET[39m /user/get-game-state/22
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:00:01 [32mGET[39m /
+11:00:02 [32mGET[39m /favicon.ico
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:00:44 [32mGET[39m /
+####################
+Server environment local
+####################
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+11:05:15 [32mGET[39m /
+11:05:15 [32mGET[39m /path_to_your_logo_image
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:07:00 [32mGET[39m /
+11:07:00 [32mGET[39m /path_to_your_logo_image
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:10:08 [32mGET[39m /
+11:10:08 [32mGET[39m /path_to_your_logo_image
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:11:37 [32mGET[39m /
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:13:50 [32mGET[39m /
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:14:07 [32mGET[39m /
+####################
+Server environment local
+####################
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+11:14:27 [32mGET[39m /
+11:30:23 [33mPOST[39m /user/login
+11:30:39 [33mPOST[39m /user/login
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:32:20 [32mGET[39m /
+11:32:26 [33mPOST[39m /user/login
+Server environment local
+####################
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:32:50 [32mGET[39m /
+11:32:59 [33mPOST[39m /user/login
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:33:53 [32mGET[39m /
+11:33:59 [33mPOST[39m /user/login
+11:34:04 [32mGET[39m /
+11:34:11 [33mPOST[39m /user/login
+11:34:14 [32mGET[39m /
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:36:36 [32mGET[39m /
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:39:40 [32mGET[39m /
+11:39:45 [32mGET[39m /
+11:39:55 [33mPOST[39m /user/login
+11:40:00 [32mGET[39m /
+11:40:07 [33mPOST[39m /user/login
+11:40:10 [32mGET[39m /user/get-game-state/22
+11:40:17 [33mPOST[39m /user/save-game-state/
+11:40:18 [32mGET[39m /
+11:40:22 [33mPOST[39m /user/login
+11:40:24 [32mGET[39m /user/get-game-state/22
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:46:10 [32mGET[39m /
+####################
+Server environment local
+Database connection  postgres://postgres:TOLOSA01@localhost/postgres
+####################
+11:47:12 [32mGET[39m /
+11:47:18 [33mPOST[39m /user/login
+11:47:20 [32mGET[39m /user/get-game-state/22
+11:47:23 [32mGET[39m /
+11:47:37 [33mPOST[39m /user/login
+11:47:54 [32mGET[39m /user/get-game-state/22
+12:08:34 [32mGET[39m /
