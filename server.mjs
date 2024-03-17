@@ -22,7 +22,7 @@ server.use(express.json());
 server.use(express.static('public'));
 
 
-server.use("/user", USER_API);r 
+server.use("/user", USER_API);
 server.listen(server.get('port'), function () {
     console.log('server running', server.get('port'));
     
