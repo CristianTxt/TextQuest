@@ -196,7 +196,7 @@
         <script>
 let apiUrl;
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.ENVIRONMENT === 'prod') {
     // Use render link in production
     apiUrl = 'https://textquest-hiyn.onrender.com';
 } else {
