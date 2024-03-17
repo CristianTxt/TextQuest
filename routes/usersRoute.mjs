@@ -108,6 +108,23 @@ USER_API.post('/save-game-state', async (req, res) => {
 });
 
 
+USER_API.get('/get-game-state/:userId', async (req, res) => {
+    const user = new User();
+    const userId = req.params.userId;
+
+    try {
+        // Retrieve the user's game state from the database
+        const gameState = await user.getUserGameState(userId);
+
+        res.status(HTTPCodes.SuccesfullRespons.Ok).send(gameState).end();
+    } catch (error) {
+        console.error("Error retrieving game state:", error);
+        res.status(HTTPCodes.ServerErrorRespons.InternalError).send("Internal Server Error").end();
+        return;
+    }
+
+
+});
 
 // POST endpoint to update user details
 USER_API.post('/:id', async (req, res) => {

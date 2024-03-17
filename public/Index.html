@@ -7,9 +7,116 @@
     <title>User List & Text Adventure Game</title>
 
     <style>
-        /* Your CSS styles remain unchanged */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            padding: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
         .hidden {
             display: none;
+        }
+
+        #form-selection {
+            margin-top: 10px;
+            padding: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        form input[type="text"],
+        form input[type="email"],
+        form input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #game-container {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        #output {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        #choices {
+            margin-bottom: 10px;
+        }
+
+        #choices button {
+            margin-right: 10px;
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #choices-text {
+            width: 100%;
+            height: 100px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+
+        #save-button,
+        #load-button,
+        #sign-out-button {
+            margin-right: 10px;
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 
@@ -17,47 +124,48 @@
 
 <body>
 
-    <h1> Text Adventure Game</h1>
+    <div class="container">
+        <h1>Text Adventure Game</h1>
 
+        <!-- Dropdown Menu to Switch between Registration and Login -->
+        <label for="form-selection">Select Form:</label>
+        <select id="form-selection">
+            <option value="register">Register</option>
+            <option value="login">Login</option>
+        </select>
 
-    <!-- Dropdown Menu to Switch between Registration and Login -->
-    <label for="form-selection">Select Form:</label>
-    <select id="form-selection">
-        <option value="register">Register</option>
-        <option value="login">Login</option>
-    </select>
+        <!-- Register User Section -->
+        <form id="register-user-form" class="form hidden">
+            <h2>Register User</h2>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Register User</button>
+        </form>
 
-    <!-- Register User Section -->
-    <form id="register-user-form" class="form">
-        <h2>Register User</h2>
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <button type="submit">Register User</button>
-    </form>
+        <!-- Login Section -->
+        <form id="login-user-form" class="form hidden">
+            <h2>Login</h2>
+            <label for="login-email">Email:</label>
+            <input type="email" id="login-email" name="login-email" required>
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" name="login-password" required>
+            <button type="submit">Login</button>
+        </form>
 
-    <!-- Login Section -->
-    <form id="login-user-form" class="form hidden">
-        <h2>Login</h2>
-        <label for="login-email">Email:</label>
-        <input type="email" id="login-email" name="login-email" required>
-        <label for="login-password">Password:</label>
-        <input type="password" id="login-password" name="login-password" required>
-        <button type="submit">Login</button>
-    </form>
-
-    <!-- Text Adventure Game Section -->
-    <div id="game-container" class=" hidden">
-        <div id="output">Welcome to the Text Adventure Game! Make your choices.</div>
-        <div id="choices"></div>
-        <textarea id="choices-text" rows="10" cols="80" readonly></textarea>
-        <button id="save-button">Save</button> <!-- Add Save Button -->
-        <button id="load-button">Load Saved Game</button> <!-- Add Load Button -->
-        <button id="sign-out-button">Sign Out</button>
-    </div>
+       <!-- Text Adventure Game Section -->
+<div id="game-container" class="hidden">
+    <h2 id="username-display"></h2> <!-- Add this line to display the username -->
+    <div id="output">Welcome to the Text Adventure Game! Make your choices.</div>
+    <div id="choices"></div>
+    <textarea id="choices-text" rows="10" cols="80" readonly></textarea>
+    <button id="save-button">Save</button> <!-- Add Save Button -->
+    <button id="load-button">Load Saved Game</button> <!-- Add Load Button -->
+    <button id="sign-out-button">Sign Out</button>
+</div>
 
     <!-- Your game elements -->
 
@@ -66,49 +174,69 @@
         const apiUrl = 'http://localhost:5000';
 
         let gameState = {
-            currentScenario: 'intro',
-            choices: {
-                intro: {
-                    LookAround: 'lookAround',
-                    OpenDoor: 'openDoor'
-                },
-                lookAround: {
-                    InvestigateRoom: 'investigateRoom',
-                    OpenDoor: 'openDoor'
-                },
-                investigateRoom: {
-                    Desk: 'desk',
-                    Window: 'window'
-                },
-                desk: {
-                    LeaveRoom: 'leaveRoom'
-                },
-                window: {
-                    JumpOut: 'jumpOut'
-                },
-                openDoor: {
-                    Hallway: 'hallway'
-                },
-                hallway: {
-                    Left: 'left',
-                    Right: 'right'
-                },
-                // Add more choices and scenarios here...
-            },
-            scenarioText: {
-                intro: 'You wake up in a mysterious room. It\'s dark but you can barely see that there is a door in front of you. What do you do?',
-                lookAround: 'You look around the room. There seems to be some interesting objects scattered around. What do you do next?',
-                investigateRoom: 'You decide to investigate further. Do you want to check the desk or look out the window?',
-                desk: 'You find some papers on the desk. What do you do?',
-                window: 'You approach the window. It seems to be stuck. Do you try to open it?',
-                openDoor: 'You open the door and find yourself in a dimly lit hallway. Which way do you go?',
-                hallway: 'You enter a dimly lit hallway. Which way do you go?',
-                // Add more scenario texts here...
-            },
+    currentScenario: 'intro',
+    choices: {
+        intro: {
+            LookAround: 'lookAround',
+            OpenDoor: 'openDoor'
+        },
+        lookAround: {
+            InvestigateRoom: 'investigateRoom',
+            OpenDoor: 'openDoor'
+        },
+        investigateRoom: {
+            Desk: 'desk',
+            Window: 'window'
+        },
+        desk: {
+            LeaveRoom: 'leaveRoom'
+        },
+        window: {
+            JumpOut: 'jumpOut'
+        },
+        openDoor: {
+            Hallway: 'hallway'
+        },
+        hallway: {
+            Left: 'left',
+            Right: 'right'
+        },
+        left: {
+            Stairs: 'stairs'
+        },
+        right: {
+            TrapDoor: 'trapDoor'
+        },
+        stairs: {
+            TowerTop: 'towerTop'
+        },
+        trapDoor: {
+            Tunnel: 'tunnel'
+        },
+        towerTop: {
+            CrossBridge: 'crossBridge'
+        },
+        // Add more choices and scenarios here...
+    },
+    scenarioText: {
+        intro: 'You wake up in a mysterious room. It\'s dark but you can barely see that there is a door in front of you. What do you do?',
+        lookAround: 'You look around the room. There seems to be some interesting objects scattered around. What do you do next?',
+        investigateRoom: 'You decide to investigate further. Do you want to check the desk or look out the window?',
+        desk: 'You find some papers on the desk. What do you do?',
+        window: 'You approach the window. It seems to be stuck. Do you try to open it?',
+        openDoor: 'You open the door and find yourself in a dimly lit hallway. Which way do you go?',
+        hallway: 'You enter a dimly lit hallway. Which way do you go?',
+        left: 'You choose to go left and find a stairway leading upwards. Where does it lead?',
+        right: 'You choose to go right and discover a trap door on the floor. What lies beneath?',
+        stairs: 'You climb the stairs and emerge at the top of a tower. What do you see?',
+        trapDoor: 'You open the trap door and descend into a dark tunnel. What awaits you in the depths?',
+        towerTop: 'You reach the top of the tower and find a narrow bridge stretching across an abyss. Will you dare to cross it?',
+        // Add more scenario texts here...
+    },
             playerChoices: []
-        }; 
-           
-        currentGameState = {currentScenario: ""}
+        };
+
+        currentGameState = { currentScenario: "" }
 
 
 
@@ -146,27 +274,29 @@
             });
 
             loginUserForm.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-                const response = await fetch(`${apiUrl}/user/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password }),
-                });
-                const data = await response.json();
-                loginUserForm.reset();
-                if (response.ok) {
-                    localStorage.setItem('token', data.authToken);
-                    localStorage.setItem("userId", data.existingUser.id)
-                    gameContainer.classList.remove('hidden');
-                } else {
-                    alert('Login failed. Please check your credentials.');
-                }
-            });
-
+    event.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const response = await fetch(`${apiUrl}/user/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    loginUserForm.reset();
+    if (response.ok) {
+        localStorage.setItem('token', data.authToken);
+        localStorage.setItem("userId", data.existingUser.id);
+        const usernameDisplay = document.getElementById('username-display');
+        usernameDisplay.textContent = `Welcome, ${data.existingUser.name}!`; // Display the username
+        gameContainer.classList.remove('hidden');
+        loginUserForm.classList.add('hidden'); // Hide the login form
+    } else {
+        alert('Login failed. Please check your credentials.');
+    }
+});
             const signOutButton = document.getElementById('sign-out-button');
             signOutButton.addEventListener('click', () => {
                 localStorage.removeItem('token');
@@ -211,6 +341,42 @@
 
             updateGame(); // Initial game update
 
+
+            async function loadGameState() {
+                const userId = localStorage.getItem("userId");
+                const token = localStorage.getItem('token');
+
+                const response = await fetch(`${apiUrl}/user/get-game-state/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+
+                    }
+                });
+
+                if (response.ok) {
+                    const gameState = await response.json(); // Parse JSON response
+                    console.log(gameState);
+                    return gameState;
+                } else {
+                    throw new Error('Failed to load game state');
+                }
+            }
+
+            const loadButton = document.getElementById('load-button');
+            loadButton.addEventListener('click', async () => {
+                try {
+                    const loadedGameState = await loadGameState();
+                    document.getElementById('choices-text').value = loadedGameState.currentScenario;
+                    
+                } catch (error) {
+                    console.error('Error loading game state:', error);
+                    // Handle the error as needed
+                }
+            });
+
+
+
             async function saveGameState(currentGameState) {
                 const userId = localStorage.getItem("userId");
                 const token = localStorage.getItem('token');
@@ -236,7 +402,7 @@
                 saveGameState(currentGameState);
             });
 
-           
+
 
         });
 

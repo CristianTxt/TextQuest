@@ -139,7 +139,29 @@ class DBManager {
         }
     }
 
-   
+    async getGameState(userId) {
+        const client = new pg.Client(this.#credentials);
+    
+        try {
+            await client.connect();
+            // Retrieve the game state for the specified user ID
+            const result = await client.query('SELECT "game_state" FROM "public"."UserGameStates" WHERE "user_id" = $1;', [userId]);
+            if (result.rows.length === 0) {
+                
+                // If no game state found for the user, return null
+                return null;
+            } else {
+                // Parse and return the game state
+                return result.rows[0].game_state;
+            }
+        } catch (error) {
+            console.error("Error retrieving game state:", error);
+            throw error; // Propagate the error
+        } finally {
+            client.end(); // Disconnect from the database
+        }
+    }
+    
     
 
 
@@ -152,16 +174,16 @@ class DBManager {
 // It is a judgment call which one is the best. But go for the one you understand the best.
 
 // 1:
-let connectionString = process.env.ENVIORMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
+let connectionString = process.env.ENVIRONMENT  == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
 
 // 2:
 connectionString = process.env.DB_CONNECTIONSTRING_LOCAL;
-if (process.env.ENVIORMENT != "local") {
+if (process.env.ENVIRONMENT  != "local") {
     connectionString = process.env.DB_CONNECTIONSTRING_PROD;
 }
 
 //3: 
-connectionString = process.env["DB_CONNECTIONSTRING_" + process.env.ENVIORMENT.toUpperCase()];
+connectionString = process.env["DB_CONNECTIONSTRING_" + process.env.ENVIRONMENT .toUpperCase()];
 
 
 // We are using an enviorment variable to get the db credentials 

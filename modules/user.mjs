@@ -84,6 +84,18 @@ class User {
       throw new Error("Error saving user game state");
     }
   }
+
+  async getUserGameState(userId) {
+    try {
+      const gameState = await DBManager.getGameState(userId);
+      return gameState; // Return the retrieved game state
+      
+    } catch (error) {
+      console.error("Error getting user game state:", error);
+      throw new Error("Error getting user game state");
+    }
+  }
+  
   
   
 }
