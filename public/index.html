@@ -197,12 +197,15 @@
 let apiUrl;
 
 if (process.env.ENVIRONMENT === 'prod') {
-    // Use production URL
     apiUrl = process.env.DB_CONNECTIONSTRING_PROD;
-} else {
-    // Default to local URL
+} else if (process.env.ENVIRONMENT === 'local') {
     apiUrl = process.env.DB_CONNECTIONSTRING_LOCAL;
+} else {
+    // Default to production if no environment specified
+    apiUrl = process.env.DB_CONNECTIONSTRING_PROD;
 }
+ process.env.DB_CONNECTIONSTRING_LOCAL;
+
 
 
 
