@@ -4,7 +4,7 @@ import USER_API from './routes/usersRoute.mjs'; // This is where we have defined
 import SuperLogger from './modules/SuperLogger.mjs';
 import printDeveloperStartupInportantInformationMSG from "./modules/developerHelpers.mjs";
 
-printDeveloperStartupInportantInformationMSG();
+
 
 
 // Creating an instance of the server
@@ -30,4 +30,7 @@ server.use("/user", USER_API);
 // Start the server 
 server.listen(server.get('port'), function () {
     console.log('server running', server.get('port'));
+    
 });
+
+printDeveloperStartupInportantInformationMSG();
